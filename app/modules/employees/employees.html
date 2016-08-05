@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-6" ng-repeat="employee in employees" style="padding: 15px;">
+        <div class="employeeBox media">
+            <div class="media-left">
+                <img ng-src="{{employee.picture}}" class="imgEmployee" alt="">
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{employee.name}}</h4>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut reprehenderit aperiam ratione ad? Doloremque possimus tempore obcaecati magni eligendi non error, ut, fugit porro accusantium totam voluptate, quis ad libero! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores assumenda praesentium provident optio expedita quo delectus maxime quisquam quas error suscipit earum dolorem, consequatur ipsum mollitia aut sint nostrum reiciendis.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis, beatae, voluptatum praesentium facere facilis sed libero sint! Animi hic sunt enim aliquid ipsam, reiciendis, natus iste doloribus deserunt nemo, dolor!</p>
+            </div>
+            <div class="container" style="text-align:right;">
+                <button class="btn btn-danger" ng-click="deleteEmployee(employee.id)">Eliminar</button>
+                <button class="btn">Liquidar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="/modules/employees/employees.css">

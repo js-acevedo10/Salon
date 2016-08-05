@@ -1,0 +1,41 @@
+
+.loginBox {
+    top: 20vh;
+    padding: 45px 25px 5px 25px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 3px lightgray;
+    text-align: center;
+}
+
+.loginBox form {
+    text-align: left;
+}
+
+.loginBox a {
+    margin-bottom: 0px;
+    color: gray;
+    font-weight: lighter;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.loginBox h1 {
+    font-family: cursive;
+}
+
+.form label,
+.form input,
+.form button {
+    font-weight: lighter;
+}
+
+.userImage {
+    text-align: center;
+    margin-top: -140px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 1px solid black;
+    object-fit: cover;
+    object-position: center;
+}

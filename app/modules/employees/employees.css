@@ -1,0 +1,12 @@
+.employeeBox {
+    background-color: seashell;
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 2px lightgray;
+}
+
+.imgEmployee {
+    object-fit: scale-down;
+    object-position: center;
+    height: 100px;
+}

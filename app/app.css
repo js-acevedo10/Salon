@@ -1,0 +1,19 @@
+/* app css stylesheet */
+html {
+    background-color: #FFFFFF;
+}
+
+.primaryColor {
+    background-color: #e3f2fd;
+}
+
+.disabled {
+    display: none;
+}
+
+.enabled {
+    display: block;
+}
+.contenedorPpal {
+    padding-top: 40px;
+}

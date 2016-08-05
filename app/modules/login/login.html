@@ -1,0 +1,16 @@
+<div class="col-xs-10 offset-xs-1 col-md-6 offset-md-3 col-lg-4 offset-lg-4 loginBox primaryColor">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d3/User_Circle.png" alt="" class="userImage">
+    <form class="form" name="loginForm">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="email" class="form-control" ng-model="login.username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" ng-model="login.password" name="password" required>
+        </div>
+        <button class="btn btn-secondary" style="margin-bottom: 40px;" ng-click="login()">Login</button>
+    </form>
+    <a href="mailto:juansantiago.acevedocorrea@gmail.com">Desarrollado por Juan Santiago Acevedo C.</a>
+</div>
+<link rel="stylesheet" href="/modules/login/login.css">
