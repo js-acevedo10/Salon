@@ -12,6 +12,9 @@ angular.module('salon.employees', ['ngRoute'])
     .controller('EmployeesCtrl', ['$scope', 'Backand', '$location', '$http', function ($scope, Backand, $location, $http) {
 
         $scope.currentUser = {};
+        $scope.addEmployeeClientError = false;
+        $scope.addEmployeeServerError = false;
+        $scope.deleteEmployeeServerError = false;
 
         getUserDetails();
 
@@ -42,6 +45,35 @@ angular.module('salon.employees', ['ngRoute'])
             }, function errorCallback(response) {
                 $scope.employees = "error";
             });
+        };
+
+        $scope.addNewEmployee = function () {
+            if ($scope.newUser != undefined && $scope.newUser.name != undefined && $scope.newUser.name != "" && $scope.newUser.url != undefined && $scope.newUser.url != "") {
+                $scope.addEmployeeClientError = false;
+                var newUserName = $scope.newUser.name;
+                $scope.newUser.name = "";
+                var newUserUrl = $scope.newUser.url;
+                $scope.newUser.url = "";
+                var newUserDate = new Date();
+
+                $http({
+                    method: 'POST',
+                    url: Backand.getApiUrl() + '/1/objects/Employees?returnObject=true',
+                    data: {
+                        startDate: newUserDate,
+                        picture: newUserUrl,
+                        name: newUserName
+                    }
+                }).then(function successCallback(response) {
+                    $scope.addEmployeeServerError = false;
+                    $scope.nuevoUser = response.data;
+                    $scope.employees.push($scope.nuevoUser);
+                }, function errorCallback(response) {
+                    $scope.addEmployeeServerError = true;
+                });
+            } else {
+                $scope.addEmployeeClientError = true;
+            }
         };
 
         $scope.deleteEmployee = function (idEmployee) {

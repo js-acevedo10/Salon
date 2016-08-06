@@ -1,0 +1,16 @@
+
+.productBox {
+    background-color: white;
+    padding: 15px;
+}
+
+.productBox p {
+    font-weight: lighter;
+    margin-bottom: 3px;
+}
+
+.productImage {
+    height: 197px;
+    width: 100%;
+    object-fit: scale-down;
+}

@@ -1,10 +1,11 @@
 /* app css stylesheet */
+
 html {
     background-color: #FFFFFF;
 }
 
 .primaryColor {
-    background-color: #e3f2fd;
+    background-color: #0275d8;
 }
 
 .disabled {
@@ -14,6 +15,55 @@ html {
 .enabled {
     display: block;
 }
+
 .contenedorPpal {
-    padding-top: 40px;
+    padding: 40px 2.5vw 10px 2.5vw;
+}
+
+.navbar {
+    border-radius: 0px !important;
+}
+
+.shadowBox {
+    border-radius: 0px;
+    box-shadow: 0px 5px 5px lightgray;
+}
+
+.shadowBoxButton {
+    border-radius: 0px;
+    box-shadow: 0px 5px 5px lightgray;
+    cursor: pointer;
+}
+
+.shadowBoxButton:active,
+.shadowBoxButton:focus {
+    box-shadow: 0px 1px 1px lightgray;
+    opacity: 0.9;
+}
+
+.btn {
+    border-radius: 0;
+}
+
+.invisibleInDesktop {
+    display: none;
+}
+
+.myJumbotron {
+    padding: 5px;
+}
+
+img {
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .invisibleInDesktop {
+        display: block;
+    }
 }

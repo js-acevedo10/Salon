@@ -1,0 +1,18 @@
+<div ng-repeat="category in categories">
+    <h2 style="font-weight: lighter;">Categor&iacute;a <strong>{{category.name}}</strong> <button class="btn btn-outline-success pull-xs-right">Agregar</button></h2>
+    <div class="jumbotron myJumbotron row">
+        <div class="col-xs-6 col-md-4 col-lg-3" style="padding:10px;" ng-repeat="product in products | filter:{category: category.id}">
+            <div class="productBox shadowBox">
+                <h3 class="text-xs-center">{{product.name}}</h3>
+                <hr>
+                <p><b>Precio:</b> ${{product.price}}</p>
+                <p><b>Descuento:</b> {{product.discount*100}}%</p>
+                <p><b>Esta semana:</b> 15 veces</p>
+                <hr>
+                <button class="btn btn-outline-info btn-block">Modificar</button>
+                <button class="btn btn-danger btn-block" ng-click="deleteProduct(product.id)">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="/modules/products/products.css">

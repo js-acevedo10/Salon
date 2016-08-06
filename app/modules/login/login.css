@@ -2,9 +2,10 @@
 .loginBox {
     top: 20vh;
     padding: 45px 25px 5px 25px;
-    border-radius: 5px;
-    box-shadow: 0px 1px 3px lightgray;
     text-align: center;
+    color: white;
+    font-weight: lighter;
+    font-size: 24px;
 }
 
 .loginBox form {
@@ -13,8 +14,7 @@
 
 .loginBox a {
     margin-bottom: 0px;
-    color: gray;
-    font-weight: lighter;
+    color: ghostwhite;
     font-size: 12px;
     text-decoration: none;
 }

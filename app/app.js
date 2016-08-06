@@ -7,6 +7,7 @@ angular.module('salon', [
     'salon.home',
     'salon.version',
     'salon.employees',
+    'salon.products',
     'backand',
     'ngStorage'
 ]).config(function (BackandProvider) {
