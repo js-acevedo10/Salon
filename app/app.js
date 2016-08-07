@@ -18,7 +18,7 @@ angular.module('salon', [
     $routeProvider.otherwise({
         redirectTo: '/login'
     });
-}]).controller('IndexCtrl', ['$scope', '$localStorage', '$location', function ($scope, $localStorage, $location) {
+}]).controller('IndexCtrl', ['$scope', '$localStorage', '$location', 'Backand', function ($scope, $localStorage, $location, Backand) {
     $scope.$storage = $localStorage;
     $scope.getNavClass = function () {
         if ($location.path() == "/login") {
@@ -27,8 +27,8 @@ angular.module('salon', [
             return 'enabled';
         }
     }
-    $scope.logOut = function () {
-        delete $scope.$storage.userInfo;
-        $location.path('/');
+    $scope.logout = function () {
+        Backand.signout();
+        $location.path('/login');
     };
 }]);

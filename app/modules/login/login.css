@@ -28,14 +28,3 @@
 .form button {
     font-weight: lighter;
 }
-
-.userImage {
-    text-align: center;
-    margin-top: -140px;
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    border: 1px solid black;
-    object-fit: cover;
-    object-position: center;
-}

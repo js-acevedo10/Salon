@@ -67,3 +67,27 @@ img {
         display: block;
     }
 }
+
+#warning-message {
+    display: none;
+    text-align: center;
+    margin-top: 30vh;
+    font-weight: lighter;
+    font-size: 35px;
+    padding: 20px;
+}
+
+@media only screen and (orientation:portrait) {
+    #wrapper {
+        display: none;
+    }
+    #warning-message {
+        display: block;
+    }
+}
+
+@media only screen and (orientation:landscape) {
+    #warning-message {
+        display: none;
+    }
+}

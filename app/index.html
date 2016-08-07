@@ -21,22 +21,36 @@
 
 <body>
 
-    <!--[if lt IE 7]>
+    <div id="wrapper">
+
+        <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-    <nav class="navbar navbar-dark primaryColor" ng-controller="IndexCtrl">
-        <a class="navbar-brand" href="#!/home">SalonApp</a>
-        <div class="nav navbar-nav" ng-class="getNavClass()">
-            <a class="nav-item nav-link" ng-href="#!/home">Inicio</a>
-            <a class="nav-item nav-link" ng-href="#!/employees">Empleados</a>
-            <a class="nav-item nav-link" ng-href="#!/products">Productos</a>
-            <a class="nav-item nav-link" ng-href="#!/accounting">Cuentas</a>
-            <a class="nav-item nav-link" ng-href="#!/settings">Configuraci&oacute;n</a>
-        </div>
-    </nav>
+        <nav class="navbar navbar-dark primaryColor" ng-controller="IndexCtrl">
+            <a class="navbar-brand" href="#!/home">SalonApp</a>
+            <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2" aria-controls="exCollapsingNavbar2" aria-expanded="false" aria-label="Toggle navigation" style="color: white;">
+                &#9776;
+            </button>
+            <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
+                <div class="nav navbar-nav" ng-class="getNavClass()">
+                    <a class="nav-item nav-link" ng-href="#!/home">Inicio</a>
+                    <a class="nav-item nav-link" ng-href="#!/employees">Empleados</a>
+                    <a class="nav-item nav-link" ng-href="#!/products">Productos</a>
+                    <a class="nav-item nav-link" ng-href="#!/accounting">Cuentas</a>
+                    <a class="nav-item nav-link" ng-href="#!/settings">Configuraci&oacute;n</a>
+                    <a class="nav-item nav-link pull-md-right" style="cursor: pointer;" ng-click="logout()">Cerrar Sesi&oacute;n</a>
+                </div>
+            </div>
+        </nav>
 
-    <div class="container-fluid contenedorPpal" ng-view></div>
+        <div class="container-fluid contenedorPpal" ng-view></div>
+
+    </div>
+
+    <div id="warning-message">
+        <p>Aumenta el ancho de tu pantalla o rota tu dispositivo para utilizar Salon.</p>
+    </div>
 
     <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>

@@ -1,18 +1,121 @@
+<div class="alert alert-danger fade in" role="alert" ng-show="updateProductError">
+    <strong>Error!</strong> Ha ocurrido un error modificando el producto, revisa los datos y tu conexión a internet.
+</div>
+<div class="alert alert-danger fade in" role="alert" ng-show="addProductError">
+    <strong>Error!</strong> Ha ocurrido un error agregando el producto, revisa los datos y tu conexión a internet.
+</div>
+<div class="alert alert-danger fade in" role="alert" ng-show="deleteProductError">
+    <strong>Error!</strong> Ha ocurrido un error eliminando el producto, revisa tu conexión a internet.
+</div>
+<div class="alert alert-danger fade in" role="alert" ng-show="getProductError">
+    <strong>Error!</strong> Ha ocurrido un error descargando los productos, revisa tu conexión a internet.
+</div>
 <div ng-repeat="category in categories">
-    <h2 style="font-weight: lighter;">Categor&iacute;a <strong>{{category.name}}</strong> <button class="btn btn-outline-success pull-xs-right">Agregar</button></h2>
+    <h2 style="font-weight: lighter;">Categor&iacute;a <strong>{{category.name}}</strong> 
+    <button class="btn btn-outline-success pull-xs-right" data-toggle="modal" data-target="#addModal" ng-click="showAddVals(category)">Agregar</button></h2>
     <div class="jumbotron myJumbotron row">
         <div class="col-xs-6 col-md-4 col-lg-3" style="padding:10px;" ng-repeat="product in products | filter:{category: category.id}">
             <div class="productBox shadowBox">
                 <h3 class="text-xs-center">{{product.name}}</h3>
                 <hr>
-                <p><b>Precio:</b> ${{product.price}}</p>
+                <p><b>Precio:</b> {{checkPrice(product.price)}}</p>
                 <p><b>Descuento:</b> {{product.discount*100}}%</p>
                 <p><b>Esta semana:</b> 15 veces</p>
-                <hr>
-                <button class="btn btn-outline-info btn-block">Modificar</button>
-                <button class="btn btn-danger btn-block" ng-click="deleteProduct(product.id)">Eliminar</button>
+                <div ng-if="userIsAdmin">
+                    <hr>
+                    <button class="btn btn-outline-info btn-block .open-AddModifyDialog" data-toggle="modal" data-target="#modifyModal" ng-click="showModifyVals(product)">Modificar</button>
+                    <button class="btn btn-danger btn-block" ng-click="deleteProduct(product.id)">Eliminar</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<!-- Modal MODIFY -->
+<div class="modal fade modifyModal" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modifyModalLabel">Modificar Producto</h4>
+            </div>
+            <div class="modal-body edit-content">
+                <form class="form modifyForm">
+                    <div class="form-group">
+                        <label for="name">Nombre:</label>
+                        <input type="text" class="input form-control" id="name" name="name" ng-model="modifyForm.name">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Precio:</label>
+                        <input type="number" class="input form-control" id="price" name="price" ng-model="modifyForm.price">
+                    </div>
+                    <div class="form-group">
+                        <label for="sPercentage">Porcentaje Comisi&oacute;n:</label>
+                        <input type="number" class="input form-control" id="sPercentage" name="sPercentage" ng-model="modifyForm.sPercentage">
+                    </div>
+                    <div class="form-group">
+                        <label for="fixedCost">Costo Fijo:</label>
+                        <input type="number" class="input form-control" id="fixedCost" name="fixedCost" ng-model="modifyForm.fixedCost">
+                    </div>
+                    <div class="form-group">
+                        <label for="discount">Descuento:</label>
+                        <input type="number" class="input form-control" id="discount" name="discount" ng-model="modifyForm.discount">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="updateProduct()" data-dismiss="modal">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal MODIFY -->
+<!-- Modal ADD -->
+<div class="modal fade addModal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="addModalLabel">Agregar Producto a </h4>
+            </div>
+            <div class="modal-body edit-content">
+                <form class="form addForm" name="addProductForm">
+                    <div class="form-group">
+                        <label for="name">Nombre:</label>
+                        <input type="text" class="input form-control" id="name" name="name" ng-model="addForm.name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Categor&iacute;a:</label>
+                        <input type="text" class="input form-control" id="category" name="category" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Precio:</label>
+                        <input type="number" class="input form-control" id="price" name="price" ng-model="addForm.price" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sPercentage">Porcentaje Comisi&oacute;n:</label>
+                        <input type="number" class="input form-control" id="sPercentage" name="sPercentage" ng-model="addForm.sPercentage" min="0" max="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fixedCost">Costo Fijo:</label>
+                        <input type="number" class="input form-control" id="fixedCost" name="fixedCost" ng-model="addForm.fixedCost" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="discount">Descuento:</label>
+                        <input type="number" class="input form-control" id="discount" name="discount" ng-model="addForm.discount" min="0" max="1" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="addProduct()" data-dismiss="modal" ng-disabled="!addProductForm.$valid">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal ADD -->
 <link rel="stylesheet" href="/modules/products/products.css">

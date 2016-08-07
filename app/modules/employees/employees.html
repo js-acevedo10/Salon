@@ -1,11 +1,15 @@
-<div class="alert alert-danger fade in" role="alert" ng-show="addEmployeeClientError">
-    <strong>Error!</strong> Debes llenar todos los campos para a&ntilde;adir un nuevo empleado.
-</div>
 <div class="alert alert-danger fade in" role="alert" ng-show="addEmployeeServerError">
-    <strong>Error!</strong> Ha ocurrido un error guardando al empleado, revisa los datos y tu conexión a internet.
+    <strong>Error!</strong> Ha ocurrido un error guardando al empleado, revisa los datos ingresados y tu conexión a internet.
 </div>
-
-
+<div class="alert alert-danger fade in" role="alert" ng-show="modifyEmployeeError">
+    <strong>Error!</strong> Ha ocurrido un error modificando al empleado, revisa los datos ingresados y tu conexión a internet.
+</div>
+<div class="alert alert-danger fade in" role="alert" ng-show="deleteEmployeeServerError">
+    <strong>Error!</strong> Ha ocurrido un error eliminando al empleado, revisa tu conexión a internet.
+</div>
+<div class="alert alert-danger fade in" role="alert" ng-show="getEmployeeError">
+    <strong>Error!</strong> Ha ocurrido un error descargando los empleados, revisa tu conexión a internet.
+</div>
 <div class="row">
     <div class="col-lg-6 col-xl-4" ng-repeat="employee in employees" style="padding: 15px;">
         <div class="employeeBox shadowBox row" style="margin:0;">
@@ -20,10 +24,9 @@
                 <p><b>Ganancias Hoy:</b> $89.000</p>
                 <p><b>Efectivo en Caja:</b> $140.000</p>
             </div>
-            <div class="col-xs-12">
+            <div class="col-xs-12" ng-if="userIsAdmin">
                 <hr>
-                <button class="btn btn-secondary">Cambiar Foto</button>
-                <button class="btn btn-secondary">Renombrar</button>
+                <button class="btn btn-secondary" data-toggle="modal" data-target="#modifyModal" ng-click="showModifyVals(employee)">Modificar</button>
                 <hr class="invisibleInDesktop">
                 <button class="btn btn-danger" ng-click="deleteEmployee(employee.id)">Eliminar</button>
             </div>
@@ -34,13 +37,13 @@
             <div class="col-xs-12" style="padding: 0px 0px 10px 0px;">
                 <img ng-src="https://cdn2.iconfinder.com/data/icons/social-media-2/512/User_-_add-512.png" class="imgAddEmployee" alt="">
             </div>
-            <div class="col-xs-12" style="text-align: center;">
+            <div class="col-xs-12" style="text-align: center;" ng-if="userIsAdmin">
                 <hr>
                 <h1 style="padding: 0; margin: 0; font-weight: lighter;">Agregar Nuevo Empleado</h1>
             </div>
         </div>
     </button>
-    <!-- Modal -->
+    <!-- Modal ADD -->
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -54,11 +57,11 @@
                     <form class="form" name="addUserForm">
                         <div class="form-group">
                             <label for="name">Nombre:</label>
-                            <input class="form-control" type="text" ng-model="newUser.name" required>
+                            <input class="form-control" type="text" ng-model="newEmployee.name" required>
                         </div>
                         <div class="form-group">
                             <label for="url">Foto de perfil (url):</label>
-                            <input class="form-control" type="url" ng-model="newUser.url" required>
+                            <input class="form-control" type="url" ng-model="newEmployee.url" required>
                         </div>
                     </form>
                 </div>
@@ -69,6 +72,36 @@
             </div>
         </div>
     </div>
-    <!-- Modal -->
+    <!-- Modal ADD -->
+    <!-- Modal MODIFY -->
+    <div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="modifyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="modifyModalLabel">Modificar Empleado</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form modifyForm" name="modifyEmployeeForm">
+                        <div class="form-group">
+                            <label for="name">Nombre:</label>
+                            <input class="form-control" type="text" id="name" ng-model="modifyEmployee.nname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="url">Foto de perfil (url):</label>
+                            <input class="form-control" type="url" id="url" ng-model="modifyEmployee.url">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="!modifyEmployeeForm.$valid" ng-click="modifyEmployee()" data-dismiss="modal">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal MODIFY -->
 </div>
 <link rel="stylesheet" href="/modules/employees/employees.css">
