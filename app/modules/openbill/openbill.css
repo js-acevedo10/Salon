@@ -12,6 +12,10 @@
     padding-bottom: 112px;
 }
 
+.bill p {
+    font-weight: lighter;
+}
+
 .panelTotal {
     background-color: white;
     border-top: 1px solid black;
@@ -46,10 +50,12 @@
     word-break: normal;
     white-space: normal;
     padding: 4px;
+    margin-bottom: 8px;
 }
 
 .btn-category {
     outline: none !important;
+    height: 80px;
 }
 
 .itemBill {

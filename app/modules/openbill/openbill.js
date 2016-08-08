@@ -22,6 +22,7 @@ angular.module('salon.openbill', ['ngRoute'])
         $scope.billSubtotal = 0;
         $scope.billDiscount = 0;
         $scope.billTotal = 0;
+        $scope.todaysDate = new Date().toLocaleDateString();
         if ($scope.billType != 'multiple') {
             $scope.employeeId = $routeParams.id;
             $scope.billTypeMultiple = false;
@@ -42,7 +43,7 @@ angular.module('salon.openbill', ['ngRoute'])
         getEmployees();
 
         function getEmployees() {
-            $scope.getEmployeePromise = $http({
+            $scope.loadBillPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Employees/',
                 //                params: {
@@ -67,7 +68,7 @@ angular.module('salon.openbill', ['ngRoute'])
         };
 
         function getProducts() {
-            $scope.getProductPromise = $http({
+            $scope.loadBillPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Products/'
                     //                ,
@@ -88,7 +89,7 @@ angular.module('salon.openbill', ['ngRoute'])
         getCategorias();
 
         function getCategorias() {
-            $scope.getProductPromise = $http({
+            $scope.loadBillPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/ProductCategories/'
                     //                ,

@@ -30,7 +30,7 @@ angular.module('salon.products', ['ngRoute'])
                     if (data !== null) {
                         $scope.currentUser.name = data.username;
                         $scope.currentUser.role = data.role;
-                        if (data.role == 'Admin' || data.role == 'Owner) {
+                        if (data.role == 'Admin' || data.role == 'Owner') {
                             $scope.userIsAdmin = true;
                         }
                     }

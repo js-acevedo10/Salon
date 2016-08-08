@@ -2,16 +2,19 @@
     <div class="col-sm-5" style="height: 100%; padding: 10px;">
         <div class="col-xs-12 bill">
             <div class="panelFactura">
+                <p class="text-xs-center m-b-0" style="margin-top: 10px;">Be-Youtiful Peluquer&iacute;a</p>
+                <p class="text-xs-center m-b-0">Factura no.X del {{todaysDate}}</p>
+                <p class="text-xs-center" ng-if="!billTypeMultiple">A cargo de {{currentEmployee.name}}</p>
                 <div class="col-xs-12 itemBill" ng-repeat="item in itemsInBill track by $index">
-                    <p>{{item.productName}}<b class="pull-xs-right">${{item.price}}</b></p>
-                    <p class="small" ng-if="item.productDiscount != 0">Descuento del {{item.productDiscount*100}}%<b class="pull-xs-right">-${{item.price*(item.productDiscount)}}</b></p>
+                    <p>{{item.productName}}<b class="pull-xs-right">{{item.price | currency : $ : 0}}</b></p>
+                    <p class="small" ng-if="item.productDiscount != 0">Descuento del {{item.productDiscount*100}}%<b class="pull-xs-right">-{{item.price*(item.productDiscount) | currency : $ : 0}}</b></p>
                     <p class="small" ng-if="billTypeMultiple" style="color: gray;">Servicio prestado por {{item.employee.name}}</p>
                 </div>
             </div>
             <div class="col-xs-12 panelTotal">
-                <p style="padding-top: 10px;">SubTotal: <normal style="margin-left: 25px;">${{billSubtotal}}</normal></p>
-                <p>Descuento: <normal style="margin-left: 25px;">-${{billDiscount}}</normal></p>
-                <p><strong>Total: </strong><strong style="margin-left: 25px;">${{billTotal}}</strong></p>
+                <p style="padding-top: 10px;">SubTotal: <normal style="margin-left: 25px;">{{billSubtotal | currency : $ : 0}}</normal></p>
+                <p>Descuento: <normal style="margin-left: 25px;">-{{billDiscount | currency : $ : 0}}</normal></p>
+                <p><strong>Total: </strong><strong style="margin-left: 25px;">{{billTotal | currency : $ : 0}}</strong></p>
             </div>
         </div>
     </div>

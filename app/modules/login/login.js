@@ -16,7 +16,7 @@ angular.module('salon.login', ['ngRoute', 'ngStorage'])
     $scope.login = function () {
         var username = $scope.login.username;
         var password = $scope.login.password;
-        Backand.signin(username, password)
+        $scope.loginPromise = Backand.signin(username, password)
         .then(function (response) {
             getUserDetails();
             return response;
