@@ -1,0 +1,67 @@
+<div class="row fullheight" cg-busy="{promise:loadBillPromise, message:'Cargando, por favor espere.'}">
+    <div class="col-sm-5" style="height: 100%; padding: 10px;">
+        <div class="col-xs-12 bill">
+            <div class="panelFactura">
+                <div class="col-xs-12 itemBill" ng-repeat="item in itemsInBill track by $index">
+                    <p>{{item.productName}}<b class="pull-xs-right">${{item.price}}</b></p>
+                    <p class="small" ng-if="item.productDiscount != 0">Descuento del {{item.productDiscount*100}}%<b class="pull-xs-right">-${{item.price*(item.productDiscount)}}</b></p>
+                    <p class="small" ng-if="billTypeMultiple" style="color: gray;">Servicio prestado por {{item.employee.name}}</p>
+                </div>
+            </div>
+            <div class="col-xs-12 panelTotal">
+                <p style="padding-top: 10px;">SubTotal: <normal style="margin-left: 25px;">${{billSubtotal}}</normal></p>
+                <p>Descuento: <normal style="margin-left: 25px;">-${{billDiscount}}</normal></p>
+                <p><strong>Total: </strong><strong style="margin-left: 25px;">${{billTotal}}</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-7" style="padding: 10px;">
+        <div class="col-xs-12" style="padding: 0;">
+            <p>Selecciona una Categor&iacute;a y un producto para registrar</p>
+            <hr>
+        </div>
+        <div class="panelCategorias col-sm-4">
+            <div class="col-xs-12" style="padding:0">
+                <button class="btn btn-block btn-outline-primary btn-category" ng-repeat="category in categories" ng-click="setCategory(category.id)" ng-class="{focus: category.id == selectedCategory}" >{{category.name}}</button>
+            </div>
+        </div>
+        <div class="col-sm-8" style="padding-right: 0;">
+            <div class="col-xs-12" style="padding:0;">
+                <button class="btn btn-producto btn-secondary" ng-repeat="product in products | filter:{category: selectedCategory}" ng-attr-data-toggle="{{billTypeMultipleOrPriceIsCero(product.price) ? 'modal' : ''}}" data-target="#addModal" ng-click="showAddVals(product)">{{product.name}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal ADD -->
+<div class="modal fade addModal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="addModalLabel">Eliminar</h4>
+            </div>
+            <div class="modal-body edit-content">
+                <form name="addForm" class="form">
+                    <div class="form-group" ng-if="billTypeMultiple">
+                        <label for="employeeSelect">Empleado que prestó el servicio</label>
+                        <select name="employeeSelect" id="employeeSelect" class="form-control" ng-model="newItem.employee" required>
+                            <option ng-repeat="employee in employees" value="{{employee.id}}">{{employee.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group" ng-if="selectedProduct.price == 0">
+                        <label for="price">Precio</label>
+                        <input type="number" class="input form-control" name="price" ng-model="newItem.price" min="0" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="addItemToBill()" data-dismiss="modal" ng-disabled="!addForm.$valid">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal ADD -->
+<link rel="stylesheet" href="/modules/openbill/openbill.css">

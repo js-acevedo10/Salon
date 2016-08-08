@@ -1,18 +1,21 @@
-<h2>Seleccione un empleado para registrar un servicio</h2>
-<hr>
-<div class="row">
-    <div class="col-md-4 col-lg-3" style="padding: 10px;" ng-repeat="employee in employees">
-        <div class="employeeBox shadowBoxButton" ng-click="openBill(employee.id)">
-            <p class="tituloEB">{{employee.name}}</p>
-            <hr>
-            <img ng-src="{{employee.picture}}" alt="" class="imgEmployee">
+<div cg-busy="{promise:getEmployeePromise, message:'Cargando, por favor espere.'}">
+    <br>
+    <h2>Seleccione un empleado para registrar un servicio</h2>
+    <hr>
+    <div class="row">
+        <div class="col-xs-6 col-md-4 col-lg-3" style="padding: 10px;" ng-repeat="employee in employees">
+            <div class="employeeBox shadowBoxButton" ng-click="openBill(employee.id)">
+                <p class="tituloEB">{{employee.name}}</p>
+                <hr>
+                <img ng-src="{{employee.picture}}" alt="" class="imgEmployee">
+            </div>
         </div>
-    </div>
-    <div class="col-md-4 col-lg-3" style="padding: 10px;">
-        <div class="employeeBox shadowBoxButton" ng-click="openBill(-1)" ng-if="employees != null">
-            <p class="tituloEB">Varios Empleados</p>
-            <hr>
-            <img ng-src="http://altadireccion.info/wp-content/uploads/2014/01/integracion-equipo-trabajo.jpg" alt="" class="imgEmployee">
+        <div class="col-xs-6 col-md-4 col-lg-3" style="padding: 10px;">
+            <div class="employeeBox shadowBoxButton" ng-click="openBill(-1)" ng-if="employees != null">
+                <p class="tituloEB">Varios Empleados</p>
+                <hr>
+                <img ng-src="http://altadireccion.info/wp-content/uploads/2014/01/integracion-equipo-trabajo.jpg" alt="" class="imgEmployee">
+            </div>
         </div>
     </div>
 </div>

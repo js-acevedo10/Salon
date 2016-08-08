@@ -19,6 +19,7 @@ angular.module('salon.products', ['ngRoute'])
         $scope.addProductError = false;
         $scope.deleteProductError = false;
         $scope.getProductError = false;
+        $scope.getCategoriesError = false;
 
         getUserDetails();
 
@@ -29,17 +30,15 @@ angular.module('salon.products', ['ngRoute'])
                     if (data !== null) {
                         $scope.currentUser.name = data.username;
                         $scope.currentUser.role = data.role;
-                        if (data.role == 'Admin') {
+                        if (data.role == 'Admin' || data.role == 'Owner) {
                             $scope.userIsAdmin = true;
                         }
                     }
                 });
         };
 
-        getProducts();
-
         function getProducts() {
-            $http({
+            $scope.getProductPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Products/'
                     //                ,
@@ -51,15 +50,16 @@ angular.module('salon.products', ['ngRoute'])
                     //                }
             }).then(function successCallback(response) {
                 $scope.products = response.data.data;
-            }, function errorCallback(response) {
                 $scope.getProductError = false;
+            }, function errorCallback(response) {
+                $scope.getProductError = true;
             });
         };
 
         getCategorias();
 
         function getCategorias() {
-            $http({
+            $scope.getProductPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/ProductCategories/'
                     //                ,
@@ -71,8 +71,10 @@ angular.module('salon.products', ['ngRoute'])
                     //                }
             }).then(function successCallback(response) {
                 $scope.categories = response.data.data;
+                $scope.getCategoriesError = false;
+                getProducts();
             }, function errorCallback(response) {
-                $scope.categories = "error";
+                $scope.getCategoriesError = true;
             });
         };
 
@@ -125,10 +127,10 @@ angular.module('salon.products', ['ngRoute'])
             });
         }
 
-        $scope.deleteProduct = function (idProduct) {
+        $scope.deleteProduct = function () {
             $http({
                 method: 'DELETE',
-                url: Backand.getApiUrl() + '/1/objects/Products/' + idProduct
+                url: Backand.getApiUrl() + '/1/objects/Products/' + $scope.selectedProductId
             }).then(function successCallback(response) {
                 $scope.deleteProductError = false;
                 getProducts();
@@ -166,5 +168,11 @@ angular.module('salon.products', ['ngRoute'])
             $scope.addProductForm.sPercentage = "";
             $scope.addProductForm.fixedCost = ""
             $scope.addProductForm.discount = "";
+        }
+        
+        $scope.showDeleteVals = function (product) {
+            $scope.selectedProductId = product.id;
+            angular.element(document.querySelector("#deleteModal .modal-title")).text('Eliminar ' + product.name);
+            angular.element(document.querySelector("#deleteModal .modal-body")).html('<p>¿Realmente deseas eliminar el producto ' + product.name + '?</p>');
         }
 }]);

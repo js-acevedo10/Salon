@@ -1,5 +1,5 @@
 .employeeBox {
-/*    background-color: #e3f2fd;*/
+    /*    background-color: #e3f2fd;*/
     background-color: whitesmoke;
     padding: 25px;
     height: 100%;
@@ -11,6 +11,7 @@
 
 .employeeBox p {
     font-weight: lighter;
+    margin-bottom: 8px;
 }
 
 .imgEmployee {
@@ -20,13 +21,24 @@
     width: 100%;
 }
 
+.imgAddEmployee {
+    object-fit: scale-down;
+    height: 230px;
+    width: 100%;
+}
+
+.imageBox {
+    padding: 0px 0px 10px 15px;
+}
+
 @media only screen and (max-width: 1436px) {
     .btn {
         width: 100%;
     }
 }
-.imgAddEmployee {
-    object-fit: scale-down;
-    height: 230px;
-    width: 100%;
+
+@media only screen and (max-width: 768px) {
+    .imageBox {
+        padding: 0px 0px 10px 0px;
+    }
 }

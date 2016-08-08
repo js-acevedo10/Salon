@@ -1,34 +1,35 @@
 <div class="alert alert-danger fade in" role="alert" ng-show="addEmployeeServerError">
-    <strong>Error!</strong> Ha ocurrido un error guardando al empleado, revisa los datos ingresados y tu conexión a internet.
+    <strong>Error!</strong> Ha ocurrido un error guardando al empleado, revisa los datos ingresados y tu conexi&oacute;n a internet.
 </div>
 <div class="alert alert-danger fade in" role="alert" ng-show="modifyEmployeeError">
-    <strong>Error!</strong> Ha ocurrido un error modificando al empleado, revisa los datos ingresados y tu conexión a internet.
+    <strong>Error!</strong> Ha ocurrido un error modificando al empleado, revisa los datos ingresados y tu conexi&oacute;n a internet.
 </div>
 <div class="alert alert-danger fade in" role="alert" ng-show="deleteEmployeeServerError">
-    <strong>Error!</strong> Ha ocurrido un error eliminando al empleado, revisa tu conexión a internet.
+    <strong>Error!</strong> Ha ocurrido un error eliminando al empleado, revisa tu conexi&oacute;n a internet.
 </div>
 <div class="alert alert-danger fade in" role="alert" ng-show="getEmployeeError">
-    <strong>Error!</strong> Ha ocurrido un error descargando los empleados, revisa tu conexión a internet.
+    <strong>Error!</strong> Ha ocurrido un error descargando los empleados, revisa tu conexi&oacute;n a internet.
 </div>
-<div class="row">
-    <div class="col-lg-6 col-xl-4" ng-repeat="employee in employees" style="padding: 15px;">
+<div class="row" cg-busy="{promise:getEmployeePromise, message:'Cargando, por favor espere.'}">
+    <div class="col-xs-6 col-xl-4" ng-repeat="employee in employees" style="padding: 15px;">
         <div class="employeeBox shadowBox row" style="margin:0;">
-            <div class="col-md-4" style="padding: 0px 0px 10px 15px;">
+            <div class="col-md-4 imageBox">
                 <img ng-src="{{employee.picture}}" class="imgEmployee" alt="">
             </div>
             <div class="col-md-8">
                 <h4>{{employee.name}}</h4>
                 <hr>
-                <p><b>Servicios Hoy:</b> 17</p>
-                <p><b>Producido Hoy:</b> $189.000</p>
-                <p><b>Ganancias Hoy:</b> $89.000</p>
-                <p><b>Efectivo en Caja:</b> $140.000</p>
+                <h5>Hoy</h5>
+                <p><b>Servicios:</b> 17</p>
+                <p><b>Producido:</b> $189.000</p>
+                <p><b>Ganancias:</b> $89.000</p>
+                <p><b>Caja:</b> $140.000</p>
             </div>
             <div class="col-xs-12" ng-if="userIsAdmin">
                 <hr>
                 <button class="btn btn-secondary" data-toggle="modal" data-target="#modifyModal" ng-click="showModifyVals(employee)">Modificar</button>
                 <hr class="invisibleInDesktop">
-                <button class="btn btn-danger" ng-click="deleteEmployee(employee.id)">Eliminar</button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" ng-click="showDeleteVals(employee)">Eliminar</button>
             </div>
         </div>
     </div>
@@ -91,7 +92,7 @@
                         </div>
                         <div class="form-group">
                             <label for="url">Foto de perfil (url):</label>
-                            <input class="form-control" type="url" id="url" ng-model="modifyEmployee.url">
+                            <input class="form-control" type="url" id="url" ng-model="modifyEmployee.url" required>
                         </div>
                     </form>
                 </div>
@@ -103,5 +104,26 @@
         </div>
     </div>
     <!-- Modal MODIFY -->
+<!-- Modal DELETE -->
+<div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="deleteModalLabel">Eliminar</h4>
+            </div>
+            <div class="modal-body edit-content">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="deleteEmployee()" data-dismiss="modal">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal DELETE -->
 </div>
 <link rel="stylesheet" href="/modules/employees/employees.css">

@@ -26,7 +26,7 @@ angular.module('salon.home', ['ngRoute'])
 
         getEmployees();
         function getEmployees() {
-            $http({
+            $scope.getEmployeePromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Employees/',
                 params: {
@@ -42,7 +42,11 @@ angular.module('salon.home', ['ngRoute'])
             });
         };
         
-        $scope.openBill = function (id) {
-            console.log(id);
+        $scope.openBill = function(employeeId) {
+            if(employeeId == -1) {
+                $location.path('/bills/open/multiple/0');
+            } else {
+                $location.path('/bills/open/specific/' + employeeId);
+            }
         }
 }]);

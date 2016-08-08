@@ -28,7 +28,7 @@ angular.module('salon.employees', ['ngRoute'])
                     if (data !== null) {
                         $scope.currentUser.name = data.username;
                         $scope.currentUser.role = data.role;
-                        if (data.role == 'Admin') {
+                        if (data.role == 'Admin' || data.role == 'Owner') {
                             $scope.userIsAdmin = true;
                         }
                     }
@@ -38,7 +38,7 @@ angular.module('salon.employees', ['ngRoute'])
         getEmployees();
 
         function getEmployees() {
-            $http({
+            $scope.getEmployeePromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Employees/',
 //                params: {
@@ -49,8 +49,9 @@ angular.module('salon.employees', ['ngRoute'])
 //                }
             }).then(function successCallback(response) {
                 $scope.employees = response.data.data;
-            }, function errorCallback(response) {
                 $scope.getEmployeeError = false;
+            }, function errorCallback(response) {
+                $scope.getEmployeeError = true;
             });
         };
 
@@ -97,10 +98,10 @@ angular.module('salon.employees', ['ngRoute'])
             });
         };
 
-        $scope.deleteEmployee = function (idEmployee) {
+        $scope.deleteEmployee = function () {
             $http({
                 method: 'DELETE',
-                url: Backand.getApiUrl() + '/1/objects/Employees/' + idEmployee
+                url: Backand.getApiUrl() + '/1/objects/Employees/' + $scope.selectedEmployeeId
             }).then(function successCallback(response) {
                 getEmployees();
                 $scope.deleteEmployeeServerError = false;
@@ -112,7 +113,15 @@ angular.module('salon.employees', ['ngRoute'])
         $scope.showModifyVals = function (employee) {
             $scope.selectedEmployeeId = employee.id;
             angular.element(document.querySelector("#modifyModal .modal-title")).text('Modificar a ' + employee.name);
-            angular.element(document.querySelector("#modifyModal .modifyForm #name")).val(employee.name);
-            angular.element(document.querySelector("#modifyModal .modifyForm #url")).val(employee.picture);
+//            angular.element(document.querySelector("#modifyModal .modifyForm #name")).val(employee.name);
+//            angular.element(document.querySelector("#modifyModal .modifyForm #url")).val(employee.picture);
+            $scope.modifyEmployee.nname = employee.name;
+            $scope.modifyEmployee.url = employee.picture;
         };
+        
+        $scope.showDeleteVals = function (employee) {
+            $scope.selectedEmployeeId = employee.id;
+            angular.element(document.querySelector("#deleteModal .modal-title")).text('Eliminar ' + employee.name);
+            angular.element(document.querySelector("#deleteModal .modal-body")).html('<p>¿Realmente deseas eliminar a ' + employee.name + '?</p>');
+        }
 }]);

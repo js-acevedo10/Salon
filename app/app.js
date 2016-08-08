@@ -8,8 +8,10 @@ angular.module('salon', [
     'salon.version',
     'salon.employees',
     'salon.products',
+    'salon.openbill',
     'backand',
-    'ngStorage'
+    'ngStorage',
+    'cgBusy'
 ]).config(function (BackandProvider) {
     BackandProvider.setAppName('salon');
     BackandProvider.setSignUpToken('3afd489a-4488-4857-a208-96c39fe22f4a');

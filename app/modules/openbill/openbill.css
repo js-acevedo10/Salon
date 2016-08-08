@@ -1,0 +1,62 @@
+
+.fullheight {
+    height: 90vh;
+    background-color: whitesmoke;
+    position: relative;
+}
+
+.panelFactura {
+    margin-bottom: 0;
+    overflow-y: scroll;
+    height: 100%;
+    padding-bottom: 112px;
+}
+
+.panelTotal {
+    background-color: white;
+    border-top: 1px solid black;
+    margin-top: 0;
+    text-align: right;
+    height: 112px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+
+.panelTotal p {
+    margin-bottom: 10px;
+}
+
+.bill {
+    background-color: white;
+    border: 1px solid black;
+    height: 100%;
+    overflow: hidden;
+}
+
+.panelCategorias {
+    padding: 0;
+}
+
+.btn-producto {
+    width: 33.33%;
+    height: 80px;
+    word-break: normal;
+    white-space: normal;
+    padding: 4px;
+}
+
+.btn-category {
+    outline: none !important;
+}
+
+.itemBill {
+    border-bottom: 1px dotted grey;
+    margin-top: 10px;
+}
+
+.itemBill p {
+    margin-bottom: 4px;
+}
