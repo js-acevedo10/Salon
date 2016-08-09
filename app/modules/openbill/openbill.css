@@ -1,6 +1,5 @@
-
 .fullheight {
-    height: 90vh;
+    height: 100%;
     background-color: whitesmoke;
     position: relative;
 }
@@ -65,4 +64,79 @@
 
 .itemBill p {
     margin-bottom: 4px;
+}
+
+.panelAcciones {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+}
+
+.panelAcciones .btn {
+    width: 49%;
+}
+
+.panelBotones {
+    height: 100%
+}
+
+.contenedorPpal {
+    padding: 10px 15px 0px 15px;
+    margin-bottom: 0;
+    height: 100vh;
+    padding-top: 54px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: -99;
+}
+
+@media only screen and (max-width: 768px) {
+    .fullheight {
+        font-size: 12px;
+    }
+    .panelTotal {
+        background-color: white;
+        border-top: 1px solid black;
+        margin-top: 0;
+        text-align: right;
+        height: 82px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding-right: 25px;
+        padding-left: 25px;
+    }
+    .panelTotal p {
+        margin-bottom: 3px;
+    }
+    .panelFactura {
+        margin-bottom: 0;
+        overflow-y: scroll;
+        height: 100%;
+        padding-bottom: 82px;
+    }
+    .panelAcciones .btn {
+        font-size: 12px;
+    }
+    .panelBotones p {
+        font-size: 14px;
+    }
+    .btn-producto {
+        width: 33.33%;
+        height: 40px;
+        word-break: normal;
+        white-space: normal;
+        padding: 4px;
+        margin-bottom: 2px;
+        font-size: 12px;
+    }
+    .btn-category {
+        outline: none !important;
+        height: 40px;
+        font-size: 12px;
+    }
 }

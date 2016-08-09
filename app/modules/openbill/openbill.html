@@ -12,26 +12,36 @@
                 </div>
             </div>
             <div class="col-xs-12 panelTotal">
-                <p style="padding-top: 10px;">SubTotal: <normal style="margin-left: 25px;">{{billSubtotal | currency : $ : 0}}</normal></p>
-                <p>Descuento: <normal style="margin-left: 25px;">-{{billDiscount | currency : $ : 0}}</normal></p>
+                <p style="padding-top: 10px;">SubTotal:
+                    <normal style="margin-left: 25px;">{{billSubtotal | currency : $ : 0}}</normal>
+                </p>
+                <p>Descuento:
+                    <normal style="margin-left: 25px;">-{{billDiscount | currency : $ : 0}}</normal>
+                </p>
                 <p><strong>Total: </strong><strong style="margin-left: 25px;">{{billTotal | currency : $ : 0}}</strong></p>
             </div>
         </div>
     </div>
-    <div class="col-sm-7" style="padding: 10px;">
+    <div class="col-sm-7 panelBotones" style="padding: 10px;">
         <div class="col-xs-12" style="padding: 0;">
             <p>Selecciona una Categor&iacute;a y un producto para registrar</p>
             <hr>
         </div>
-        <div class="panelCategorias col-sm-4">
-            <div class="col-xs-12" style="padding:0">
-                <button class="btn btn-block btn-outline-primary btn-category" ng-repeat="category in categories" ng-click="setCategory(category.id)" ng-class="{focus: category.id == selectedCategory}" >{{category.name}}</button>
+        <div class="panelProductos" style="height:100%; padding-bottom: 48px;">
+            <div class="panelCategorias col-sm-4">
+                <div class="col-xs-12" style="padding:0">
+                    <button class="btn btn-block btn-outline-primary btn-category" ng-repeat="category in categories" ng-click="setCategory(category.id)" ng-class="{focus: category.id == selectedCategory}">{{category.name}}</button>
+                </div>
+            </div>
+            <div class="col-sm-8" style="padding-right: 0;">
+                <div class="col-xs-12" style="padding:0;">
+                    <button class="btn btn-producto btn-secondary" ng-repeat="product in products | filter:{category: selectedCategory}" ng-attr-data-toggle="{{billTypeMultipleOrPriceIsCero(product.price) ? 'modal' : ''}}" data-target="#addModal" ng-click="showAddVals(product)">{{product.name}}</button>
+                </div>
             </div>
         </div>
-        <div class="col-sm-8" style="padding-right: 0;">
-            <div class="col-xs-12" style="padding:0;">
-                <button class="btn btn-producto btn-secondary" ng-repeat="product in products | filter:{category: selectedCategory}" ng-attr-data-toggle="{{billTypeMultipleOrPriceIsCero(product.price) ? 'modal' : ''}}" data-target="#addModal" ng-click="showAddVals(product)">{{product.name}}</button>
-            </div>
+        <div class="col-xs-12 panelAcciones">
+            <button class="btn btn-primary">Cancelar</button>
+            <button class="btn btn-primary">Siguiente</button>
         </div>
     </div>
 </div>
