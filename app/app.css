@@ -22,6 +22,7 @@ html {
 
 .navbar {
     border-radius: 0px !important;
+    z-index: 1;
 }
 
 .shadowBox {

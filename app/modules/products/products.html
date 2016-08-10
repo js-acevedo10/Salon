@@ -16,7 +16,7 @@
 <div cg-busy="{promise:getProductPromise, message:'Cargando, por favor espere.'}">
     <div ng-repeat="category in categories">
         <h2 style="font-weight: lighter;">Categor&iacute;a <strong>{{category.name}}</strong> 
-    <button class="btn btn-outline-success pull-xs-right" data-toggle="modal" data-target="#addModal" ng-click="showAddVals(category)">Agregar</button></h2>
+    <button class="btn btn-outline-success pull-xs-right" data-toggle="modal" data-target="#addModal" ng-click="showAddVals(category)" ng-if="userIsAdmin">Agregar</button></h2>
         <div class="jumbotron myJumbotron row">
             <div class="col-xs-6 col-md-4 col-lg-3" style="padding:10px;" ng-repeat="product in products | filter:{category: category.id} | orderBy:'name'">
                 <div class="productBox shadowBox">

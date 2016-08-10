@@ -1,13 +1,21 @@
 .employeeBox {
 /*    background-color: #e3f2fd;*/
     background-color: whitesmoke;
-    padding: 25px;
+    padding: 15px;
     text-align: center;
     cursor: pointer;
 }
 
+.employeeBox hr {
+    margin: 10px 0;
+}
+
+.employeeBox p {
+    margin-bottom: 0px;
+}
+
 .imgEmployee {
-    height: 230px;
+    height: 200px;
     width: 100%;
     object-fit: cover;
     object-position: center;
@@ -16,6 +24,8 @@
 .tituloEB {
     font-weight: lighter;
     font-size: 30px;
-    margin-left: -20px;
-    margin-right: -20px;
+    margin-left: -10px;
+    margin-right: -10px;
 }
+
+

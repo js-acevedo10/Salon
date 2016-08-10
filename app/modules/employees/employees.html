@@ -16,7 +16,7 @@
             <div class="col-md-4 imageBox">
                 <img ng-src="{{employee.picture}}" class="imgEmployee" alt="">
             </div>
-            <div class="col-md-8">
+            <div class="col-md-8" style="padding: 0 0 0 15px;">
                 <h4>{{employee.name}}</h4>
                 <hr>
                 <h5>Hoy</h5>
@@ -25,7 +25,7 @@
                 <p><b>Ganancias:</b> $89.000</p>
                 <p><b>Caja:</b> $140.000</p>
             </div>
-            <div class="col-xs-12" ng-if="userIsAdmin">
+            <div class="col-xs-12 btn-group" ng-if="userIsAdmin" style="padding:0;">
                 <hr>
                 <button class="btn btn-secondary" data-toggle="modal" data-target="#modifyModal" ng-click="showModifyVals(employee)">Modificar</button>
                 <hr class="invisibleInDesktop">

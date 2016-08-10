@@ -28,7 +28,7 @@
 }
 
 .imageBox {
-    padding: 0px 0px 10px 15px;
+    padding: 0px 0px 10px 0px;
 }
 
 @media only screen and (max-width: 1436px) {
@@ -41,4 +41,7 @@
     .imageBox {
         padding: 0px 0px 10px 0px;
     }
+}
+.settingsButtons {
+    width: 50%;
 }

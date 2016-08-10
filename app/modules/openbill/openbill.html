@@ -6,8 +6,11 @@
                 <p class="text-xs-center m-b-0">Factura no.X del {{todaysDate}}</p>
                 <p class="text-xs-center" ng-if="!billTypeMultiple">A cargo de {{currentEmployee.name}}</p>
                 <div class="col-xs-12 itemBill" ng-repeat="item in itemsInBill track by $index">
-                    <p>{{item.productName}}<b class="pull-xs-right">{{item.price | currency : $ : 0}}</b></p>
-                    <p class="small" ng-if="item.productDiscount != 0">Descuento del {{item.productDiscount*100}}%<b class="pull-xs-right">-{{item.price*(item.productDiscount) | currency : $ : 0}}</b></p>
+                    <button type="button" class="close service-close" aria-label="Close" style="display: inline;" ng-click="deleteFromBill(item)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <p>{{item.productName}}<b class="pull-xs-right" style="margin-right: 4px;">{{item.price | currency : $ : 0}}</b></p>
+                    <p class="small" ng-if="item.productDiscount != 0">Descuento del {{item.productDiscount*100}}%<b class="pull-xs-right" style="margin-left: 2px;">-{{item.price*(item.productDiscount) | currency : $ : 0}}</b></p>
                     <p class="small" ng-if="billTypeMultiple" style="color: gray;">Servicio prestado por {{item.employee.name}}</p>
                 </div>
             </div>
@@ -22,7 +25,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-7 panelBotones" style="padding: 10px;">
+    <div class="col-sm-7 panelBotones">
         <div class="col-xs-12" style="padding: 0;">
             <p>Selecciona una Categor&iacute;a y un producto para registrar</p>
             <hr>
@@ -39,9 +42,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-xs-12 panelAcciones">
-            <button class="btn btn-primary">Cancelar</button>
-            <button class="btn btn-primary">Siguiente</button>
+        <div class="col-xs-12 panelAcciones btn-group">
+            <a href="#!/home" class="btn btn-outline-primary btn-checkout">Cancelar</a>
+            <button class="btn btn-outline-primary btn-checkout">Puntos</button>
+            <button class="btn btn-outline-primary btn-checkout" ng-click="payWithCash(false)">Tarjeta</button>
+            <button class="btn btn-outline-success btn-checkout" ng-click="payWithCash(true)">Efectivo</button>
         </div>
     </div>
 </div>

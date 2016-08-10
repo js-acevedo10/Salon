@@ -70,15 +70,12 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    padding: 10px;
-}
-
-.panelAcciones .btn {
-    width: 49%;
+    padding: 10px 10px 10px 0px;
 }
 
 .panelBotones {
-    height: 100%
+    height: 100%;
+    padding: 10px 10px 10px 0px;
 }
 
 .contenedorPpal {
@@ -91,7 +88,32 @@
     right: 0;
     left: 0;
     bottom: 0;
-    z-index: -99;
+}
+
+.service-close,
+.service-close:focus {
+    opacity: 0.5;
+    color: #d9534f;
+    outline: none;
+    line-height: 0.9;
+}
+
+.service-close:active,
+.service-close:hover {
+    opacity: 1;
+    color: #d9534f;
+    outline: none;
+}
+
+.btn-checkout {
+    height: 112px;
+    line-height: 5.9;
+    width: 25%
+}
+
+.btn-checkout:hover,
+.btn-checkout:active {
+    color: white;
 }
 
 @media only screen and (max-width: 768px) {
@@ -138,5 +160,13 @@
         outline: none !important;
         height: 40px;
         font-size: 12px;
+    }
+    .service-close {
+        line-height: 0.7;
+        font-size: 21px;
+    }
+    .btn-checkout {
+        height: 38px;
+        line-height: 1.5em;
     }
 }
