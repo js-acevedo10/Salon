@@ -8,10 +8,16 @@ angular.module('salon.home', ['ngRoute'])
             templateUrl: 'modules/home/home.html',
             controller: 'HomeCtrl'
         });
+        $routeProvider.when('/home/:payment', {
+            title: 'Home',
+            templateUrl: 'modules/home/home.html',
+            controller: 'HomeCtrl'
+        });
 }])
-    .controller('HomeCtrl', ['$scope', 'Backand', '$location', '$http', function ($scope, Backand, $location, $http) {
+    .controller('HomeCtrl', ['$scope', 'Backand', '$location', '$http', '$routeParams', '$timeout', function ($scope, Backand, $location, $http, $routeParams, $timeout) {
 
         $scope.currentUser = {};
+        $scope.paymentSucceeded = false;
         
         getUserDetails();
         function getUserDetails() {
@@ -41,6 +47,11 @@ angular.module('salon.home', ['ngRoute'])
                 $scope.employees = "error";
             });
         };
+        
+        if($routeParams.payment != undefined && $routeParams.payment != null) {
+            $scope.paymentSucceeded = true;
+            $timeout(function(){$scope.paymentSucceeded = false}, 5000); 
+        }
         
         $scope.openBill = function(employeeId) {
             if(employeeId == -1) {

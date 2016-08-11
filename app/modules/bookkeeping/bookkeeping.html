@@ -1,0 +1,29 @@
+<div class="row fullHeight">
+    <div class="col-xs-3 col-xl-2 sidePanel">
+        <button class="btn btn-transluscent btn-block" ng-class="{actual:sectionSummaryToday}" ng-click="onSectionSummaryToday()">Resumen Hoy</button>
+        <hr>
+        <button class="btn btn-transluscent btn-block" ng-class="{actual:sectionSales}" ng-click="onSectionSales()">Informe de Ventas</button>
+        <hr>
+    </div>
+    <div class="col-xs-9 col-xl-10 mainContent">
+        <div class="sectionSummaryToday" ng-show="sectionSummaryToday">
+            <div class="row employeesToday" ng-repeat="employee in employees">
+                <h3 style="font-weight: lighter;">{{employee.name}} <strong>Hoy</strong>  ({{employee.plist.length}})</h3>
+                <div class="jumbotron row" style="margin-left: 0; margin-right: 0; margin-bottom: 22px;">
+                    <div ng-repeat="(key, value) in employee.plist | countBy: 'name'">
+                        <div class="col-xs-3 col-md-2 counterboxTodayContainer">
+                            <div class="counterboxToday shadowBox">
+                                <h3><strong>{{value}}</strong></h3>
+                                <p>{{key}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sectionSales" ng-show="sectionSales">
+            <p>hola</p>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="/modules/bookkeeping/bookkeeping.css">

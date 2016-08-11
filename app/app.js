@@ -9,6 +9,8 @@ angular.module('salon', [
     'salon.employees',
     'salon.products',
     'salon.openbill',
+    'salon.bookkeeping',
+    'angular.filter',
     'backand',
     'ngStorage',
     'cgBusy'
