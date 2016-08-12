@@ -28,7 +28,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
         };
 
         function getEmployees() {
-            $scope.getEmployeePromise = $http({
+            $scope.loadingBillsPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Employees/?exclude=metadata,totalRows',
                 //                                params: {
@@ -55,7 +55,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
         getProducts();
 
         function getProducts() {
-            $scope.getProductPromise = $http({
+            $scope.loadingBillsPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Products/?exclude=metadata,totalRows'
                     //                ,
@@ -82,7 +82,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
         function getBillsToday() {
             var today = new Date();
             today.setHours(0, 0, 0, 0);
-            $http({
+            $scope.loadingBillsPromise = $http({
                 method: 'GET',
                 url: Backand.getApiUrl() + '/1/objects/Bills?exclude=metadata,totalRows',
                 params: {
@@ -95,12 +95,15 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                     ]
                 }
             }).then(function successCallback(response) {
-                var i = 0;
                 $scope.todaysBills = [];
                 $scope.todaysLazyBills = response.data.data;
                 $scope.getTodaysBillsError = false;
+                if($scope.todaysLazyBills.length == 0) {
+                    getEmployees();
+                }
+                var i = 0;
                 angular.forEach($scope.todaysLazyBills, function (lazyBill, index) {
-                    $http({
+                    $scope.loadingBillsPromise = $http({
                         method: 'GET',
                         url: Backand.getApiUrl() + '/1/objects/Bills/' + lazyBill.id + '?deep=true&exclude=metadata,totalRows'
                     }).then(function successCallback(response) {

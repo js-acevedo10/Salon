@@ -203,12 +203,10 @@ angular.module('salon.openbill', ['ngRoute'])
                     }
                 }).then(function successCallback(r3) {
                     $scope.billProductError = false;
-                    i++;
                     if (i == $scope.itemsInBill.length) {
                         $location.path('/home/success')
                     }
                 }, function errorCallback(r3) {
-                    i++;
                     $scope.billProductError = true;
                     deleteBill(bill.id, 1);
                     if (i == $scope.itemsInBill.length) {
@@ -216,6 +214,7 @@ angular.module('salon.openbill', ['ngRoute'])
                     }
                 });
             }
+            i++;
         });
     }
 

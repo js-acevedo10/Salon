@@ -5,7 +5,7 @@
         <button class="btn btn-transluscent btn-block" ng-class="{actual:sectionSales}" ng-click="onSectionSales()">Informe de Ventas</button>
         <hr>
     </div>
-    <div class="col-xs-9 col-xl-10 mainContent">
+    <div class="col-xs-9 col-xl-10 mainContent" cg-busy="{promise:loadingBillsPromise, message:'Cargando, por favor espere...'}">
         <div class="sectionSummaryToday" ng-show="sectionSummaryToday">
             <div class="row employeesToday" ng-repeat="employee in employees">
                 <h3 style="font-weight: lighter;">{{employee.name}} <strong>Hoy</strong>  ({{employee.plist.length}})</h3>
