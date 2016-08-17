@@ -21,6 +21,7 @@ angular.module('salon.openbill', ['ngRoute'])
     $scope.billSubtotal = 0;
     $scope.billDiscount = 0;
     $scope.billTotal = 0;
+    $scope.employeeCut = 0;
     $scope.multipleBillEmployees = [];
     $scope.payWithCardVar = false;
     $scope.todaysDate = new Date().toLocaleDateString();
@@ -111,18 +112,21 @@ angular.module('salon.openbill', ['ngRoute'])
     };
 
     $scope.pay = function () {
-
         if ($scope.billTypeMultiple) {
             angular.forEach($scope.multipleBillEmployees, function (emp, indx) {
 
                 var subtotal = 0;
                 var discount = 0;
                 var total = 0;
+                var eCut = 0;
+                var earn = 0;
 
                 angular.forEach($scope.itemsInBill, function (item, inde) {
                     if (item.employee.id == emp.id) {
                         subtotal += item.price;
-                        discount += item.productDiscount;
+                        discount += item.discount;
+                        eCut += item.employeeCut;
+                        earn += item.earnings;
                     }
                 })
                 total = subtotal - discount;
@@ -137,6 +141,8 @@ angular.module('salon.openbill', ['ngRoute'])
                         discount: discount,
                         totalPrice: total,
                         paidAmount: total,
+                        employeeCut: eCut,
+                        earnings: earn,
                         Buyer: ''
                     }
                 }).then(function successCallback(response) {
@@ -148,26 +154,45 @@ angular.module('salon.openbill', ['ngRoute'])
                 });
             })
         } else {
-            $scope.loadBillPromise = $http({
-                method: 'POST',
-                url: Backand.getApiUrl() + '/1/objects/Bills?returnObject=true',
-                data: {
-                    creationDate: new Date(),
-                    creditCard: $scope.payWithCardVar,
-                    subtotalPrice: $scope.billSubtotal,
-                    discount: $scope.billDiscount,
-                    totalPrice: $scope.billTotal,
-                    paidAmount: $scope.billTotal,
-                    Buyer: ''
+            var discount = 0;
+            var eCut = 0;
+            var earn= 0;
+            var i = 0;
+            
+            angular.forEach($scope.itemsInBill, function (item, index) {
+                i++;
+                discount += item.discount;
+                eCut += item.employeeCut;
+                earn += item.earnings;
+                if(i == $scope.itemsInBill.length) {
+                    payIndividual(discount, eCut, earn);
                 }
-            }).then(function successCallback(response) {
-                $scope.createBillError = false;
-                $scope.createdBill = response.data;
-                createEmployeeRelation($scope.employeeId, $scope.createdBill);
-            }, function errorCallback(response) {
-                $scope.createBillError = true;
-            });
+            })
         }
+    }
+
+    function payIndividual(discount, eCut, earn) {
+        $scope.loadBillPromise = $http({
+            method: 'POST',
+            url: Backand.getApiUrl() + '/1/objects/Bills?returnObject=true',
+            data: {
+                creationDate: new Date(),
+                creditCard: $scope.payWithCardVar,
+                subtotalPrice: $scope.billSubtotal,
+                discount: discount,
+                totalPrice: $scope.billTotal,
+                paidAmount: $scope.billTotal,
+                employeeCut: eCut,
+                earnings: earn,
+                Buyer: ''
+            }
+        }).then(function successCallback(response) {
+            $scope.createBillError = false;
+            $scope.createdBill = response.data;
+            createEmployeeRelation($scope.employeeId, $scope.createdBill);
+        }, function errorCallback(response) {
+            $scope.createBillError = true;
+        });
     }
 
     function createEmployeeRelation(employeeId, bill) {
@@ -239,7 +264,8 @@ angular.module('salon.openbill', ['ngRoute'])
         var productToAdd = {
             productId: $scope.selectedProduct.id,
             productName: $scope.selectedProduct.name,
-            productDiscount: $scope.selectedProduct.discount
+            productDiscountPercentage: $scope.selectedProduct.discount,
+            salesmanPercentage: $scope.selectedProduct.salesmanPercentage
         }
 
         if ($scope.selectedProduct.price == 0) {
@@ -247,6 +273,10 @@ angular.module('salon.openbill', ['ngRoute'])
         } else {
             productToAdd.price = $scope.selectedProduct.price;
         }
+
+        productToAdd.discount = productToAdd.price * productToAdd.productDiscountPercentage;
+        productToAdd.employeeCut = productToAdd.price * productToAdd.salesmanPercentage;
+        productToAdd.earnings = productToAdd.price - productToAdd.discount - productToAdd.employeeCut;
 
         if ($scope.billTypeMultiple) {
             angular.forEach($scope.employees, function (currentEmployee, index) {
@@ -262,7 +292,7 @@ angular.module('salon.openbill', ['ngRoute'])
         }
         $scope.itemsInBill.push(productToAdd);
         $scope.billSubtotal += productToAdd.price;
-        $scope.billDiscount += productToAdd.productDiscount * productToAdd.price;
+        $scope.billDiscount += productToAdd.productDiscountPercentage * productToAdd.price;
         $scope.billTotal = $scope.billSubtotal - $scope.billDiscount;
     }
 
@@ -275,9 +305,11 @@ angular.module('salon.openbill', ['ngRoute'])
 
     $scope.deleteFromBill = function (item) {
         var index = $scope.itemsInBill.indexOf(item);
+        var index2 = $scope.multipleBillEmployees.indexOf(item.employee);
         $scope.itemsInBill.splice(index, 1);
+        $scope.multipleBillEmployees.splice(index2, 1);
         $scope.billSubtotal -= item.price;
-        $scope.billDiscount -= item.productDiscount * item.price;
+        $scope.billDiscount -= item.productDiscountPercentage * item.price;
         $scope.billTotal = $scope.billSubtotal - $scope.billDiscount;
     }
 

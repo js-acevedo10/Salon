@@ -1,11 +1,11 @@
-<div class="row fullHeight">
+<div class="row fullHeight" cg-busy="{promise:loadingBillsPromise, message:'Cargando, por favor espere...'}">
     <div class="col-xs-3 col-xl-2 sidePanel">
         <button class="btn btn-transluscent btn-block" ng-class="{actual:sectionSummaryToday}" ng-click="onSectionSummaryToday()">Resumen Hoy</button>
         <hr>
-        <button class="btn btn-transluscent btn-block" ng-class="{actual:sectionSales}" ng-click="onSectionSales()">Informe de Ventas</button>
+        <button class="btn btn-transluscent btn-block" ng-class="{actual:sectionSales}" ng-click="onSectionSalesReport()">Informe de Ventas</button>
         <hr>
     </div>
-    <div class="col-xs-9 col-xl-10 mainContent" cg-busy="{promise:loadingBillsPromise, message:'Cargando, por favor espere...'}">
+    <div class="col-xs-9 col-xl-10 mainContent">
         <div class="sectionSummaryToday" ng-show="sectionSummaryToday">
             <div class="row employeesToday" ng-repeat="employee in employees">
                 <h3 style="font-weight: lighter;">{{employee.name}} <strong>Hoy</strong>  ({{employee.plist.length}})</h3>
@@ -21,8 +21,41 @@
                 </div>
             </div>
         </div>
-        <div class="sectionSales" ng-show="sectionSales">
-            <p>hola</p>
+        <div class="sectionSalesReport" ng-show="sectionSalesReport">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Producido</th>
+                            <th>Descuentos</th>
+                            <th>Total</th>
+                            <th>Comisi&oacute;n</th>
+                            <th>Ganancias</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="emp in reportEmployees">
+                            <th scope="row">{{emp.name}}</th>
+                            <td>{{emp.subtotal | currency : $ : 0}}</td>
+                            <td>{{emp.discount | currency : $ : 0}}</td>
+                            <td>{{emp.total | currency : $ : 0}}</td>
+                            <td>{{emp.employeeCut | currency : $ : 0}}</td>
+                            <td>{{emp.earnings | currency : $ : 0}}</td>
+                        </tr>
+                    </tbody>
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th>Total</th>
+                            <th>{{reportTotals.subtotal | currency : $ : 0}}</th>
+                            <th>{{reportTotals.discount | currency : $ : 0}}</th>
+                            <th>{{reportTotals.total | currency : $ : 0}}</th>
+                            <th>{{reportTotals.employeeCut | currency : $ : 0}}</th>
+                            <th>{{reportTotals.earnings | currency : $ : 0}}</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </div>

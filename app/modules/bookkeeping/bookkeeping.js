@@ -10,9 +10,9 @@ angular.module('salon.bookkeeping', ['ngRoute'])
         });
 }])
     .controller('BookkeepingCtrl', ['$scope', 'Backand', '$location', '$http', function ($scope, Backand, $location, $http) {
-        
+
         $scope.sectionSummaryToday = true;
-        $scope.sectionSales = false;
+        $scope.sectionSalesReport = false;
         $scope.currentUser = {};
 
         getUserDetails();
@@ -40,10 +40,10 @@ angular.module('salon.bookkeeping', ['ngRoute'])
             }).then(function successCallback(response) {
                 $scope.employees = response.data.data;
                 delete $scope.employees.__metadata;
-                angular.forEach($scope.employees, function(employee, index) {
+                angular.forEach($scope.employees, function (employee, index) {
                     employee.plist = [];
                     var ids = employee.bills.split(",");
-                    angular.forEach(ids, function(id, indez) {
+                    angular.forEach(ids, function (id, indez) {
                         $scope.getProductsFromBillWithId(id, employee.plist, $scope.todaysBills);
                     })
                 })
@@ -98,7 +98,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 $scope.todaysBills = [];
                 $scope.todaysLazyBills = response.data.data;
                 $scope.getTodaysBillsError = false;
-                if($scope.todaysLazyBills.length == 0) {
+                if ($scope.todaysLazyBills.length == 0) {
                     getEmployees();
                 }
                 var i = 0;
@@ -109,7 +109,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                     }).then(function successCallback(response) {
                         $scope.todaysBills.push(response.data);
                         $scope.getTodaysBillsError = false;
-                        if(i == $scope.todaysLazyBills.length) {
+                        if (i == $scope.todaysLazyBills.length) {
                             getEmployees();
                         }
                     }, function errorCallback(response) {
@@ -121,6 +121,44 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 $scope.getTodaysBillsError = true;
             });
         };
+
+        function getEmployeesReport() {
+            $scope.reportEmployees = [];
+            $scope.reportTotals = {
+                subtotal: 0,
+                discount: 0,
+                total: 0,
+                employeeCut: 0,
+                earnings: 0
+            };
+            angular.forEach($scope.employees, function (employee, index) {
+                var initDate = new Date();
+                initDate.setHours(0,0,0,0);
+                var finalDate = new Date();
+                finalDate.setHours(initDate.getHours() + 24);
+                $scope.loadingBillsPromise = $http({
+                    method: 'GET',
+                    url: Backand.getApiUrl() + '/1/query/data/SalesReportPerEmployeeId',
+                    params: {
+                        parameters: {
+                            employeeId: employee.id,
+                            initDate: initDate,
+                            finalDate: finalDate
+                        }
+                    }
+                }).then(function successCallback(response) {
+                    $scope.reportEmployees.push(response.data[0]);
+                    $scope.reportTotals.subtotal += response.data[0].subtotal;
+                    $scope.reportTotals.discount += response.data[0].discount;
+                    $scope.reportTotals.total += response.data[0].total;
+                    $scope.reportTotals.employeeCut += response.data[0].employeeCut;
+                    $scope.reportTotals.earnings += response.data[0].earnings;
+                    $scope.employeesReportError = false;
+                }, function errorCallback(response) {
+                    $scope.employeesReportError = true;
+                });
+            })
+        }
 
         //-----------------------------------------------------------------------
         //---------------------   UTILITIES   -----------------------------------
@@ -153,7 +191,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 });
             });
         }
-        
+
         $scope.getBillWithId = function (id, list) {
             angular.forEach($scope.todaysBills, function (bill, index) {
                 if (bill.id == id) {
@@ -161,11 +199,11 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 }
             });
         };
-        
+
         $scope.getProductsFromBillWithId = function (id, list, bills) {
             angular.forEach($scope.todaysBills, function (bill, index) {
                 if (bill.id == id) {
-                    angular.forEach(bill.products, function(relation, indez) {
+                    angular.forEach(bill.products, function (relation, indez) {
                         list.push(relation.product);
                     })
                 }
@@ -187,18 +225,20 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 }
             });
         }
-        
+
         //-----------------------------------------------------------------------
         //------------------------   ESTRAS   -----------------------------------
         //-----------------------------------------------------------------------
-        
+
         $scope.onSectionSummaryToday = function () {
             $scope.sectionSummaryToday = true;
-            $scope.sectionSales = false;
+            $scope.sectionSalesReport = false;
+            getBillsToday();
         }
-        
-        $scope.onSectionSales = function () {
+
+        $scope.onSectionSalesReport = function () {
             $scope.sectionSummaryToday = false;
-            $scope.sectionSales = true;
+            $scope.sectionSalesReport = true;
+            getEmployeesReport();
         }
 }]);

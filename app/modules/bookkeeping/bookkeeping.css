@@ -77,3 +77,14 @@
 .counterboxToday h3 {
     margin-bottom: 5px;
 }
+
+@media only screen and (max-width: 768px) {
+    .sectionSalesReport {
+        font-size: 12px;
+    }
+    
+    .sectionSalesReport .table th,
+    .sectionSalesReport .table td {
+        padding: 5px;
+    }
+}

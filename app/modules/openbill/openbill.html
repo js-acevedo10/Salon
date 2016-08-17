@@ -10,7 +10,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <p>{{item.productName}}<b class="pull-xs-right" style="margin-right: 4px;">{{item.price | currency : $ : 0}}</b></p>
-                    <p class="small" ng-if="item.productDiscount != 0">Descuento del {{item.productDiscount*100}}%<b class="pull-xs-right" style="margin-left: 2px;">-{{item.price*(item.productDiscount) | currency : $ : 0}}</b></p>
+                    <p class="small" ng-if="item.productDiscountPercentage != 0">Descuento del {{item.productDiscountPercentage*100}}%<b class="pull-xs-right" style="margin-left: 2px;">-{{item.price*(item.productDiscountPercentage) | currency : $ : 0}}</b></p>
                     <p class="small" ng-if="billTypeMultiple" style="color: gray;">Servicio prestado por {{item.employee.name}}</p>
                 </div>
             </div>
