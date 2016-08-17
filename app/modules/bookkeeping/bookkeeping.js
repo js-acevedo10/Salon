@@ -122,7 +122,13 @@ angular.module('salon.bookkeeping', ['ngRoute'])
             });
         };
 
-        function getEmployeesReport() {
+        function getEmployeesReport(initDate, finalDate) {
+            if(initDate == null) {
+                initDate = new Date();
+                initDate.setHours(0,0,0,0);
+                finalDate = new Date();
+                finalDate.setHours(initDate.getHours() + 24);
+            }
             $scope.reportEmployees = [];
             $scope.reportTotals = {
                 subtotal: 0,
@@ -132,10 +138,6 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 earnings: 0
             };
             angular.forEach($scope.employees, function (employee, index) {
-                var initDate = new Date();
-                initDate.setHours(0,0,0,0);
-                var finalDate = new Date();
-                finalDate.setHours(initDate.getHours() + 24);
                 $scope.loadingBillsPromise = $http({
                     method: 'GET',
                     url: Backand.getApiUrl() + '/1/query/data/SalesReportPerEmployeeId',
@@ -239,6 +241,6 @@ angular.module('salon.bookkeeping', ['ngRoute'])
         $scope.onSectionSalesReport = function () {
             $scope.sectionSummaryToday = false;
             $scope.sectionSalesReport = true;
-            getEmployeesReport();
+            getEmployeesReport(null, null);
         }
 }]);
