@@ -46,6 +46,10 @@ html {
     border-radius: 0;
 }
 
+.btn:focus {
+    outline: none;
+}
+
 .invisibleInDesktop {
     display: none;
 }

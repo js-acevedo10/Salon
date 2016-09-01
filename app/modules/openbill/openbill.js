@@ -18,11 +18,6 @@ angular.module('salon.openbill', ['ngRoute'])
     $scope.billTypeMultiple = true;
     $scope.itemsInBill = [];
     $scope.newItem = {};
-    $scope.billSubtotal = 0;
-    $scope.billDiscount = 0;
-    $scope.billTotal = 0;
-    $scope.employeeCut = 0;
-    $scope.multipleBillEmployees = [];
     $scope.payWithCardVar = false;
     $scope.todaysDate = new Date().toLocaleDateString();
     if ($scope.billType != 'multiple') {
@@ -112,134 +107,65 @@ angular.module('salon.openbill', ['ngRoute'])
     };
 
     $scope.pay = function () {
-        if ($scope.billTypeMultiple) {
-            angular.forEach($scope.multipleBillEmployees, function (emp, indx) {
-
-                var subtotal = 0;
-                var discount = 0;
-                var total = 0;
-                var eCut = 0;
-                var earn = 0;
-
-                angular.forEach($scope.itemsInBill, function (item, inde) {
-                    if (item.employee.id == emp.id) {
-                        subtotal += item.price;
-                        discount += item.discount;
-                        eCut += item.employeeCut;
-                        earn += item.earnings;
-                    }
-                })
-                total = subtotal - discount;
-                console.log(total);
-                $scope.loadBillPromise = $http({
-                    method: 'POST',
-                    url: Backand.getApiUrl() + '/1/objects/Bills?returnObject=true',
-                    data: {
-                        creationDate: new Date(),
-                        creditCard: $scope.payWithCardVar,
-                        subtotalPrice: subtotal,
-                        discount: discount,
-                        totalPrice: total,
-                        paidAmount: total,
-                        employeeCut: eCut,
-                        earnings: earn,
-                        Buyer: ''
-                    }
-                }).then(function successCallback(response) {
-                    $scope.createBillError = false;
-                    var createdBill = response.data;
-                    createEmployeeRelation(emp.id, createdBill);
-                }, function errorCallback(response) {
-                    $scope.createBillError = true;
-                });
-            })
-        } else {
-            var discount = 0;
-            var eCut = 0;
-            var earn= 0;
-            var i = 0;
-            
-            angular.forEach($scope.itemsInBill, function (item, index) {
-                i++;
-                discount += item.discount;
-                eCut += item.employeeCut;
-                earn += item.earnings;
-                if(i == $scope.itemsInBill.length) {
-                    payIndividual(discount, eCut, earn);
-                }
-            })
-        }
-    }
-
-    function payIndividual(discount, eCut, earn) {
+        
+        var subtotal = 0;
+        var discount = 0;
+        var total = 0;
+        var eCut = 0;
+        var earn = 0;
+        
+        angular.forEach($scope.itemsInBill, function (item, inde) {
+            subtotal += item.price;
+            discount += item.discount;
+            eCut += item.employeeCut;
+            earn += item.earnings;
+        })
+        total = subtotal - discount;
         $scope.loadBillPromise = $http({
             method: 'POST',
             url: Backand.getApiUrl() + '/1/objects/Bills?returnObject=true',
             data: {
                 creationDate: new Date(),
                 creditCard: $scope.payWithCardVar,
-                subtotalPrice: $scope.billSubtotal,
+                subtotalPrice: subtotal,
                 discount: discount,
-                totalPrice: $scope.billTotal,
-                paidAmount: $scope.billTotal,
+                totalPrice: total,
+                paidAmount: total,
                 employeeCut: eCut,
                 earnings: earn,
                 Buyer: ''
             }
         }).then(function successCallback(response) {
             $scope.createBillError = false;
-            $scope.createdBill = response.data;
-            createEmployeeRelation($scope.employeeId, $scope.createdBill);
-        }, function errorCallback(response) {
-            $scope.createBillError = true;
-        });
-    }
-
-    function createEmployeeRelation(employeeId, bill) {
-        //CREO LA RELACION MULTIPLE DE EMPLEADO A BILL
-        $scope.loadBillPromise = $http({
-            method: 'POST',
-            url: Backand.getApiUrl() + '/1/objects/Bill_Employee?returnObject=true',
-            data: {
-                employee: employeeId,
-                bill: bill.id
-            }
-        }).then(function successCallback(r2) {
-            $scope.billEmployeeError = false;
-            $scope.billEmployee = r2.data;
-            createProductRelation(employeeId, bill);
-        }, function errorCallback(r2) {
-            deleteBill(bill.id, 1);
-            $scope.billEmployeeError = true;
-        });
-    };
-
-    function createProductRelation(employeeId, bill) {
-        var i = 0;
-        //CREO PARA CADA PRODUCTO SU RELACION CON LA BILL
-        angular.forEach($scope.itemsInBill, function (product, index) {
-            if (product.employee.id == employeeId) {
-                $scope.loadBillPromise = $http({
+            var createdBill = response.data;
+            angular.forEach($scope.itemsInBill, function (item, i) {
+                $http({
                     method: 'POST',
-                    url: Backand.getApiUrl() + '/1/objects/Bill_Product?returnObject=true',
+                    url: Backand.getApiUrl() + '/1/objects/Sales?returnObject=true',
                     data: {
-                        bill: bill.id,
-                        product: product.productId
+                        date: createdBill.creationDate,
+                        productId: item.productId,
+                        productName: item.productName,
+                        productPrice: item.price,
+                        productDiscount: item.discount,
+                        productFixedCost: item.productFixedCost,
+                        productSalesmanPercentage: item.salesmanPercentage,
+                        productEmployeeCut: item.employeeCut,
+                        productEarnings: item.earnings,
+                        employeeId: item.employee.id,
+                        employeeName: item.employee.name,
+                        bill: createdBill.id
                     }
-                }).then(function successCallback(r3) {
-                    $scope.billProductError = false;
-                    if (i == $scope.itemsInBill.length) {
-                        $location.path('/home/success')
-                    }
-                }, function errorCallback(r3) {
-                    $scope.billProductError = true;
-                    deleteBill(bill.id, 1);
-                    if (i == $scope.itemsInBill.length) {
-                        console.log("me cague");
-                    }
+                }).then(function successCallback(response2) {
+                    $location.path('/home/success');
+                    $scope.createBillError = false;
+                }, function errorCallback(response2) {
+                    $scope.createBillError = true;
+                    deleteBill(createdBill.id, 0);
                 });
-            }
-            i++;
+            })
+        }, function errorCallback(repsonse) {
+            $scope.createBillError = true;
         });
     }
 
@@ -265,7 +191,8 @@ angular.module('salon.openbill', ['ngRoute'])
             productId: $scope.selectedProduct.id,
             productName: $scope.selectedProduct.name,
             productDiscountPercentage: $scope.selectedProduct.discount,
-            salesmanPercentage: $scope.selectedProduct.salesmanPercentage
+            salesmanPercentage: $scope.selectedProduct.salesmanPercentage,
+            productFixedCost: $scope.selectedProduct.fixedCost
         }
 
         if ($scope.selectedProduct.price == 0) {
@@ -284,9 +211,6 @@ angular.module('salon.openbill', ['ngRoute'])
                     productToAdd.employee = currentEmployee;
                 }
             });
-            if ($scope.multipleBillEmployees.indexOf(productToAdd.employee) == -1) {
-                $scope.multipleBillEmployees.push(productToAdd.employee);
-            }
         } else {
             productToAdd.employee = $scope.currentEmployee;
         }
@@ -305,9 +229,7 @@ angular.module('salon.openbill', ['ngRoute'])
 
     $scope.deleteFromBill = function (item) {
         var index = $scope.itemsInBill.indexOf(item);
-        var index2 = $scope.multipleBillEmployees.indexOf(item.employee);
         $scope.itemsInBill.splice(index, 1);
-        $scope.multipleBillEmployees.splice(index2, 1);
         $scope.billSubtotal -= item.price;
         $scope.billDiscount -= item.productDiscountPercentage * item.price;
         $scope.billTotal = $scope.billSubtotal - $scope.billDiscount;

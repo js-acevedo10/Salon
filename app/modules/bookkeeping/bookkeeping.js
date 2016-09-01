@@ -9,10 +9,11 @@ angular.module('salon.bookkeeping', ['ngRoute'])
             controller: 'BookkeepingCtrl'
         });
 }])
-    .controller('BookkeepingCtrl', ['$scope', 'Backand', '$location', '$http', function ($scope, Backand, $location, $http) {
+    .controller('BookkeepingCtrl', ['$scope', 'Backand', '$location', '$http', '$localStorage', function ($scope, Backand, $location, $http, $localStorage) {
 
         $scope.sectionSummaryToday = true;
         $scope.sectionSalesReport = false;
+        $scope.sectionBalanceSheet = false;
         $scope.currentUser = {};
 
         getUserDetails();
@@ -27,6 +28,8 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 });
         };
 
+        getEmployees();
+
         function getEmployees() {
             $scope.loadingBillsPromise = $http({
                 method: 'GET',
@@ -39,16 +42,14 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 //                                }
             }).then(function successCallback(response) {
                 $scope.employees = response.data.data;
-                delete $scope.employees.__metadata;
-                angular.forEach($scope.employees, function (employee, index) {
-                    employee.plist = [];
-                    var ids = employee.bills.split(",");
-                    angular.forEach(ids, function (id, indez) {
-                        $scope.getProductsFromBillWithId(id, employee.plist, $scope.todaysBills);
-                    })
-                })
+                $scope.getEmployeesError = false;
+                if ($scope.sectionSummaryToday) {
+                    getTodaysSales();
+                    getTodayExpenses();
+                    getTodayCashBase();
+                }
             }, function errorCallback(response) {
-                $scope.employees = "error";
+                $scope.getEmployeesError = true;
             });
         };
 
@@ -77,155 +78,237 @@ angular.module('salon.bookkeeping', ['ngRoute'])
         //--------------------- SECTION TODAY -----------------------------------
         //-----------------------------------------------------------------------
 
-        getBillsToday();
-
-        function getBillsToday() {
-            var today = new Date();
-            today.setHours(0, 0, 0, 0);
+        function getTodaysSales() {
+            var initDate = new Date();
+            initDate.setHours(0, 0, 0, 0, 0);
+            var finalDate = new Date();
+            finalDate.setHours(initDate.getHours() + 24);
+            finalDate.setHours(0, 0, 0, 0, 0);
             $scope.loadingBillsPromise = $http({
                 method: 'GET',
-                url: Backand.getApiUrl() + '/1/objects/Bills?exclude=metadata,totalRows',
+                url: Backand.getApiUrl() + '/1/query/data/SalesByDate',
                 params: {
-                    filter: [
-                        {
-                            fieldName: 'creationDate',
-                            operator: 'greaterThanOrEqualsTo',
-                            value: today
-                        }
-                    ]
+                    parameters: {
+                        initDate: initDate,
+                        finalDate: finalDate
+                    }
                 }
             }).then(function successCallback(response) {
-                $scope.todaysBills = [];
-                $scope.todaysLazyBills = response.data.data;
-                $scope.getTodaysBillsError = false;
-                if ($scope.todaysLazyBills.length == 0) {
-                    getEmployees();
-                }
-                var i = 0;
-                angular.forEach($scope.todaysLazyBills, function (lazyBill, index) {
-                    $scope.loadingBillsPromise = $http({
-                        method: 'GET',
-                        url: Backand.getApiUrl() + '/1/objects/Bills/' + lazyBill.id + '?deep=true&exclude=metadata,totalRows'
-                    }).then(function successCallback(response) {
-                        $scope.todaysBills.push(response.data);
-                        $scope.getTodaysBillsError = false;
-                        if (i == $scope.todaysLazyBills.length) {
-                            getEmployees();
+                $scope.sales = response.data;
+                $scope.getSalesError = false;
+                angular.forEach($scope.employees, function (emp, i) {
+                    emp.sales = [];
+                    angular.forEach($scope.sales, function (sale, j) {
+                        if (sale.employeeId == emp.id) {
+                            emp.sales.push(sale);
                         }
-                    }, function errorCallback(response) {
-                        $scope.getTodaysBillsError = true;
-                    });
-                    i++;
+                    })
                 })
             }, function errorCallback(response) {
-                $scope.getTodaysBillsError = true;
+                $scope.getSalesError = true;
             });
-        };
+        }
+        
+        function getTodayExpenses() {
+            var initDate = new Date();
+            initDate.setHours(0, 0, 0, 0, 0);
+            var finalDate = new Date();
+            finalDate.setHours(initDate.getHours() + 24);
+            finalDate.setHours(0, 0, 0, 0, 0);
+            $scope.loadingBillsPromise = $http({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/query/data/ExpensesByDate',
+                params: {
+                    parameters: {
+                        initDate: initDate,
+                        finalDate: finalDate
+                    }
+                }
+            }).then(function successCallback(response) {
+                $scope.expenses = response.data;
+                $scope.getExpensesError = false;
+            }, function errorCallback(response) {
+                $scope.getExpensesError = true;
+            });
+        }
+        
+        function getTodayCashBase() {
+            var initDate = new Date();
+            initDate.setHours(0, 0, 0, 0, 0);
+            var finalDate = new Date();
+            finalDate.setHours(initDate.getHours() + 24);
+            finalDate.setHours(0, 0, 0, 0, 0);
+            $scope.loadingBillsPromise = $http({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/query/data/CashBaseByDate',
+                params: {
+                    parameters: {
+                        initDate: initDate,
+                        finalDate: finalDate
+                    }
+                }
+            }).then(function successCallback(response) {
+                $scope.baseToday = response.data[0];
+                $scope.getBaseTodayError = false;
+            }, function errorCallback(response) {
+                $scope.getBaseTodayError = true;
+            });
+        }
+
+        function getGivenDateSales(initDate, finalDate) {
+            $http({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/query/data/SalesByDate',
+                params: {
+                    parameters: {
+                        initDate: initDate,
+                        finalDate: finalDate
+                    }
+                }
+            }).then(function successCallback(response) {
+                $scope.givenDateSales = response.data;
+                $scope.getgivenDateSalesError = false;
+                $scope.salesPieLabels = [];
+                $scope.salesPieData = [];
+                $scope.saleHoursLabels = [];
+                $scope.saleHoursSeries = ["Ventas"];
+                $scope.saleHoursData = [];
+                $scope.saleHoursDatasetOverride = [{ yAxisID: 'y-axis-1' }];
+                $scope.saleHoursOptions = {
+                    scales: {
+                        yAxes: [
+                            {
+                                id: 'y-axis-1',
+                                type: 'linear',
+                                display: true,
+                                position: 'left'
+                            }
+                        ]
+                    }
+                };
+                calcSaleHourLabels();
+            }, function errorCallback(response) {
+                $scope.getSalesError = true;
+            });
+        }
+
+        $scope.changeEmployeesReportDate = function (days) {
+            $scope.firstDate.setHours($scope.firstDate.getHours() + (24 * days));
+            $scope.lastDate.setHours($scope.lastDate.getHours() + (24 * days));
+            getEmployeesReport($scope.firstDate, $scope.lastDate);
+        }
 
         function getEmployeesReport(initDate, finalDate) {
-            if(initDate == null) {
+            if (initDate == null) {
                 initDate = new Date();
-                initDate.setHours(0,0,0,0);
+                initDate.setHours(0, 0, 0, 0, 0);
                 finalDate = new Date();
                 finalDate.setHours(initDate.getHours() + 24);
+                finalDate.setHours(0, 0, 0, 0, 0);
             }
+            var compDate = new Date();
+            if (compDate.getDate() == initDate.getDate() && compDate.getDay() == initDate.getDay() && compDate.getMonth() == initDate.getMonth()) {
+                $scope.preventFuture = true;
+            } else {
+                $scope.preventFuture = false;
+            }
+            $scope.firstDate = initDate;
+            $scope.firstDateLocal = initDate.toDateString();
+            $scope.lastDateLocal = finalDate.toDateString();
+            $scope.lastDate = finalDate;
             $scope.reportEmployees = [];
             $scope.reportTotals = {
                 subtotal: 0,
                 discount: 0,
                 total: 0,
+                cash: 0,
+                cc: 0,
                 employeeCut: 0,
                 earnings: 0
             };
-            angular.forEach($scope.employees, function (employee, index) {
-                $scope.loadingBillsPromise = $http({
-                    method: 'GET',
-                    url: Backand.getApiUrl() + '/1/query/data/SalesReportPerEmployeeId',
-                    params: {
-                        parameters: {
-                            employeeId: employee.id,
-                            initDate: initDate,
-                            finalDate: finalDate
-                        }
+            $scope.loadingBillsPromise = $http({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/query/data/SalesReportPerEmployee',
+                params: {
+                    parameters: {
+                        initDate: initDate,
+                        finalDate: finalDate
                     }
-                }).then(function successCallback(response) {
-                    $scope.reportEmployees.push(response.data[0]);
-                    $scope.reportTotals.subtotal += response.data[0].subtotal;
-                    $scope.reportTotals.discount += response.data[0].discount;
-                    $scope.reportTotals.total += response.data[0].total;
-                    $scope.reportTotals.employeeCut += response.data[0].employeeCut;
-                    $scope.reportTotals.earnings += response.data[0].earnings;
-                    $scope.employeesReportError = false;
-                }, function errorCallback(response) {
-                    $scope.employeesReportError = true;
-                });
-            })
+                }
+            }).then(function successCallback(response) {
+                $scope.reportEmployees = response.data;
+                getGivenDateSales(initDate, finalDate);
+                angular.forEach($scope.reportEmployees, function (emp, i) {
+                    emp.total = response.data[i].subtotal - response.data[i].discount;
+                    $scope.reportTotals.total += emp.total;
+                    $scope.reportTotals.subtotal += response.data[i].subtotal;
+                    $scope.reportTotals.discount += response.data[i].discount;
+                    $scope.reportTotals.cash += response.data[i].cash;
+                    $scope.reportTotals.cc += response.data[i].cc;
+                    $scope.reportTotals.employeeCut += response.data[i].employeeCut;
+                    $scope.reportTotals.earnings += response.data[i].earnings;
+                })
+                $scope.employeesReportError = false;
+            }, function errorCallback(response) {
+                $scope.employeesReportError = true;
+            });
         }
 
         //-----------------------------------------------------------------------
         //---------------------   UTILITIES   -----------------------------------
         //-----------------------------------------------------------------------
 
-        $scope.getProductListFromBills = function (bills, list) {
-            angular.forEach(bills, function (bill, index) {
-                var productsId = bill.products.split(",");
-                angular.forEach(productsId, function (id, i) {
-                    $scope.getProductWithId(id, list);
-                });
-            });
+        function calcSaleHourLabels() {
+            var minTime = $localStorage.settings[0].startTime;
+            var maxTime = $localStorage.settings[0].endTime;
+
+            if (minTime.split(' ')[1] == 'pm') {
+                var minHour = parseInt(minTime.split(' ')[0]) + 12;
+            } else {
+                var minHour = parseInt(minTime.split(' ')[0]);
+            }
+
+            if (maxTime.split(' ')[1] == 'pm') {
+                var maxHour = parseInt(maxTime.split(' ')[0]) + 12;
+            } else {
+                var maxHour = parseInt(maxTime.split(' ')[0]);
+            }
+            for (var i = minHour; i < maxHour + 1; i++) {
+                if (i < 12) {
+                    $scope.saleHoursLabels.push(i + 'am');
+                } else if(i == 12) {
+                    $scope.saleHoursLabels.push(12 + 'm');
+                } else {
+                    $scope.saleHoursLabels.push((i - 12) + 'pm');
+                }
+                $scope.saleHoursData.push(0);
+            }
+            calcSalesReportGraphs(minHour);
         }
 
-        $scope.getBillsFromListWithIds = function (idList, resultList) {
-            angular.forEach(idList, function (idFromList, index) {
-                angular.forEach($scope.todaysBills, function (bill, i) {
-                    if (bill.id == idFromList) {
-                        resultList.push(bill);
-                    }
-                })
+        function calcSalesReportGraphs(minHour) {
+            angular.forEach($scope.givenDateSales, function (sale, k) {
+                var index = $scope.salesPieLabels.indexOf(sale.productName);
+                if (index != -1) {
+                    $scope.salesPieData[index] = $scope.salesPieData[index] + 1;
+                } else {
+                    $scope.salesPieLabels.push(sale.productName);
+                    $scope.salesPieData.push(1);
+                }
+                var d = new Date(sale.date);
+                var dm = d.getHours();
+                if (d.getHours() < 12) {
+                    var dm = d.getHours() + 'am';
+                } else if(d.getHours == 12) {
+                    var dm = d.getHours() + 'm';
+                } else {
+                    var dm = (d.getHours() - 12) + 'pm';
+                }
+                var index2 = $scope.saleHoursLabels.indexOf(dm);
+                if (index2 != -1) {
+                    $scope.saleHoursData[index2] = $scope.saleHoursData[index2] + 1;
+                }
             })
-        }
-
-        $scope.getEmployeeListFromBills = function (bills, list) {
-            angular.forEach(bills, function (bill, index) {
-                var employeesId = bill.employees.split(",");
-                angular.forEach(employeesId, function (id, i) {
-                    $scope.getEmployeeWithId(id, list);
-                });
-            });
-        }
-
-        $scope.getBillWithId = function (id, list) {
-            angular.forEach($scope.todaysBills, function (bill, index) {
-                if (bill.id == id) {
-                    list.push(bill);
-                }
-            });
-        };
-
-        $scope.getProductsFromBillWithId = function (id, list, bills) {
-            angular.forEach($scope.todaysBills, function (bill, index) {
-                if (bill.id == id) {
-                    angular.forEach(bill.products, function (relation, indez) {
-                        list.push(relation.product);
-                    })
-                }
-            });
-        };
-
-        $scope.getEmployeeWithId = function (id, list) {
-            angular.forEach($scope.employees, function (employee, index) {
-                if (employee.id == id) {
-                    list.push(employee);
-                }
-            });
-        };
-
-        $scope.getProductWithId = function (id, list) {
-            angular.forEach($scope.products, function (product, index) {
-                if (product.id == id) {
-                    list.push(product);
-                }
-            });
         }
 
         //-----------------------------------------------------------------------
@@ -235,12 +318,23 @@ angular.module('salon.bookkeeping', ['ngRoute'])
         $scope.onSectionSummaryToday = function () {
             $scope.sectionSummaryToday = true;
             $scope.sectionSalesReport = false;
-            getBillsToday();
+            $scope.sectionBalanceSheet = false;
+            getTodaysSales();
+            getTodayExpenses();
+            getTodayCashBase();
         }
 
         $scope.onSectionSalesReport = function () {
             $scope.sectionSummaryToday = false;
             $scope.sectionSalesReport = true;
+            $scope.sectionBalanceSheet = false;
             getEmployeesReport(null, null);
+        }
+
+        $scope.onSectionBalanceSheet = function () {
+            $scope.sectionSummaryToday = false;
+            $scope.sectionSalesReport = false;
+            $scope.sectionBalanceSheet = true;
+
         }
 }]);

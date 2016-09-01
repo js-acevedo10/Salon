@@ -1,19 +1,22 @@
 <div class="alert alert-success fade in" role="alert" ng-show="paymentSucceeded">
     <strong>Bien!</strong> El servicio ha sido registrado.
 </div>
+<div class="alert alert-success fade in" role="alert" ng-show="registerExpenseSucceeded">
+    <strong>Bien!</strong> El gasto ha sido registrado.
+</div>
 <div cg-busy="{promise:getEmployeePromise, message:'Cargando, por favor espere.'}">
     <br>
     <h2>Seleccione un empleado para registrar un servicio</h2>
     <hr>
     <div class="row">
-        <div class="col-xs-6 col-md-4 col-lg-3" style="padding: 10px;" ng-repeat="employee in employees">
+        <div class="col-xs-4 col-md-4 col-lg-2" style="padding: 10px;" ng-repeat="employee in employees">
             <div class="employeeBox shadowBoxButton" ng-click="openBill(employee.id)">
                 <p class="tituloEB">{{employee.name}}</p>
                 <hr>
                 <img ng-src="{{employee.picture}}" alt="" class="imgEmployee">
             </div>
         </div>
-        <div class="col-xs-6 col-md-4 col-lg-3" style="padding: 10px;">
+        <div class="col-xs-4 col-md-4 col-lg-2" style="padding: 10px;">
             <div class="employeeBox shadowBoxButton" ng-click="openBill(-1)" ng-if="employees != null">
                 <p class="tituloEB">Varios Empleados</p>
                 <hr>
@@ -21,5 +24,64 @@
             </div>
         </div>
     </div>
+    <hr>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#cashBaseModal">Registrar Bases para Mañana</button>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#expenseModal">Registrar Gasto</button>
 </div>
+<!-- Modal Expense -->
+<div class="modal fade payModal" id="expenseModal" tabindex="-1" role="dialog" aria-labelledby="expenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="payModalLabel">Registrar un Gasto</h4>
+            </div>
+            <div class="modal-body edit-content">
+                <form name="addForm" class="form">
+                    <div class="form-group">
+                        <label for="desc">Descripci&oacute;n</label>
+                        <input type="text" class="input form-control" name="desc" ng-model="newExpense.description">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Precio</label>
+                        <input type="number" class="input form-control" name="price" ng-model="newExpense.price" min="0" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="addExpense()" data-dismiss="modal" ng-disabled="!addForm.$valid">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Expense -->
+<!-- Modal CashBase -->
+<div class="modal fade payModal" id="cashBaseModal" tabindex="-1" role="dialog" aria-labelledby="cashBaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="payModalLabel">Registrar un Gasto</h4>
+            </div>
+            <div class="modal-body edit-content">
+                <form name="addCForm" class="form">
+                    <div class="form-group">
+                        <label for="ammount">Base</label>
+                        <input type="number" class="input form-control" name="ammount" ng-model="newCashBase.ammount" min="0" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="addCashBase()" data-dismiss="modal" ng-disabled="!addCForm.$valid">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal CashBase -->
 <link rel="stylesheet" href="/modules/home/home.css">

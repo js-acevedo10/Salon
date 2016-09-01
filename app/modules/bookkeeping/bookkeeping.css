@@ -64,14 +64,16 @@
 }
 
 .counterboxTodayContainer {
-    padding: 7px;
     text-align: center;
+    padding-left: 2px;
+    padding-right: 2px;
 }
+
 .counterboxToday {
     height: 100px;
     background-color: white;
-    padding: 15px 5px 10px 5px;
-    word-break: break-all;
+    padding: 20px 5px 10px 5px;
+    word-break: keep-all;
 }
 
 .counterboxToday h3 {
@@ -79,12 +81,70 @@
 }
 
 @media only screen and (max-width: 768px) {
+    .btn-transluscent {
+        font-size: 14px;
+    }
+    .sectionSummaryToday {
+        font-size: 12px;
+    }
     .sectionSalesReport {
         font-size: 12px;
     }
-    
     .sectionSalesReport .table th,
     .sectionSalesReport .table td {
         padding: 5px;
     }
+    .table-responsive {
+        margin-bottom: -20px;
+    }
+    .btn-backDate {
+        font-size: 12px;
+        width: 20%;
+    }
+    .pie {
+        display: none;
+    }
+    .mobilecharts {
+        display: block;
+    }
+    .desktopcharts {
+        display: none;
+    }
+    h3 {
+        font-size: 20px;
+    }
+}
+
+@media only screen and (min-width: 769px) {
+    .mobilecharts {
+        display: none;
+    }
+}
+
+.table-responsive {}
+
+.sectionSalesReport {
+    position: relative;
+    height: 100%;
+}
+
+.btn-backDate {
+    width: 25%;
+    margin: 0;
+}
+
+.salesTableBtnGroup {
+    width: 100%;
+}
+
+#doughnut {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.charts {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
 }

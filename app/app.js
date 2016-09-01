@@ -13,7 +13,8 @@ angular.module('salon', [
     'angular.filter',
     'backand',
     'ngStorage',
-    'cgBusy'
+    'cgBusy',
+    'chart.js'
 ]).config(function (BackandProvider) {
     BackandProvider.setAppName('salon');
     BackandProvider.setSignUpToken('3afd489a-4488-4857-a208-96c39fe22f4a');
