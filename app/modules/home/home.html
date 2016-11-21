@@ -9,7 +9,7 @@
     <h2>Seleccione un empleado para registrar un servicio</h2>
     <hr>
     <div class="row">
-        <div class="col-xs-4 col-md-4 col-lg-2" style="padding: 10px;" ng-repeat="employee in employees">
+        <div class="col-xs-4 col-md-4 col-lg-2" style="padding: 10px;" ng-repeat="employee in employees" ng-if="(userIsAdmin && !employee.active) || employee.active">
             <div class="employeeBox shadowBoxButton" ng-click="openBill(employee.id)">
                 <p class="tituloEB">{{employee.name}}</p>
                 <hr>

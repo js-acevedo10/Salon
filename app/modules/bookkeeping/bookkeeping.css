@@ -69,6 +69,14 @@
     padding-right: 2px;
 }
 
+.cc {
+    background-color: lightskyblue !important;
+}
+
+.return {
+    background-color: indianred !important;
+}
+
 .counterboxToday {
     height: 100px;
     background-color: white;
@@ -147,4 +155,12 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 40px;
+}
+.close:hover,
+.close:active {
+    color: red;
+}
+
+.close:focus {
+    outline: none;
 }

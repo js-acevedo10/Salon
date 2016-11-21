@@ -9,14 +9,21 @@
     </div>
     <div class="col-xs-9 col-xl-10 mainContent">
         <div class="sectionSummaryToday" ng-show="sectionSummaryToday">
+            <h3 style="font-weight: lighter">La base en efectivo <strong>Hoy</strong> es de: <strong>{{baseToday.amount | currency : $ : 0}}</strong></h3>
+            <h3 style="font-weight: lighter;">En caja deben haber <strong>{{reportTotals.cash + baseToday.amount - todayExpenses| currency : $ : 0}}</strong> en efectivo contando las bases y los gastos.</h3>
+            <hr>
             <div class="row employeesToday" ng-repeat="employee in employees">
                 <h3 style="font-weight: lighter;">{{employee.name}} <strong>Hoy</strong>  ({{employee.sales.length}})</h3>
                 <div class="jumbotron row" style="margin-left: 0; margin-right: 0; margin-bottom: 22px;">
                     <div ng-repeat="sale in employee.sales">
                         <div class="col-xs-3 col-md-2 counterboxTodayContainer">
-                            <div class="counterboxToday shadowBox">
+                            <button ng-if="userIsAdmin && sale.productPrice >= 0" type="button" class="close service-close" aria-label="Close" style="display: inline; line-height: 0.7;" ng-click="returnProduct(sale)">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div class="counterboxToday shadowBox" ng-class="{cc: sale.creditCard == 1, return: sale.productPrice < 0}">
                                 {{sale.productName}}
-                                <p><strong>{{sale.productPrice | currency : $ : 0}}</strong></p>
+                                <p style="margin-bottom: -2px;"><strong>{{sale.productPrice | currency : $ : 0}}</strong></p>
+                                <small ng-if="sale.productDiscount > 0">-{{sale.productDiscount | currency : $ : 0}}</small>
                             </div>
                         </div>
                     </div>
@@ -36,10 +43,9 @@
                     </div>
                 </div>
             </div>
-            <h3 style="font-weight: lighter">La base en efectivo <strong>Hoy</strong> es de: <strong>{{baseToday.amount | currency : $ : 0}}</strong></h3>
         </div>
         <div class="sectionSalesReport" ng-show="sectionSalesReport ">
-            <div class="charts row desktopcharts" style="margin-bottom: 0;" ng-show="reportEmployees.length">
+            <div class="charts row desktopcharts" style="margin-bottom: 0;" ng-show="reportEmployees.length" ng-if="userIsAdmin">
                 <div class="col-md-7" style="padding: 0">
                     <canvas id="line" class="chart chart-line" chart-data="saleHoursData" chart-labels="saleHoursLabels" chart-series="saleHoursSeries" chart-dataset-override="saleHoursDatasetOverride" chart-options="saleHoursOptions" chart-click="onClick"></canvas>
                 </div>
@@ -60,41 +66,41 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Producido</th>
-                            <th>Descuento</th>
-                            <th>Total</th>
+                            <th ng-if="userIsAdmin">Descuento</th>
+                            <th ng-if="userIsAdmin">Total</th>
                             <th>Efectivo</th>
                             <th>Tarjeta</th>
                             <th>Comisi&oacute;n</th>
-                            <th>Ganancias</th>
+                            <th ng-if="userIsAdmin">Ganancias</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="emp in reportEmployees">
                             <th scope="row">{{emp.employeeName}}</th>
                             <td>{{emp.subtotal | currency : $ : 0}}</td>
-                            <td>{{emp.discount | currency : $ : 0}}</td>
-                            <td>{{emp.total | currency : $ : 0}}</td>
+                            <td ng-if="userIsAdmin">{{emp.discount | currency : $ : 0}}</td>
+                            <td ng-if="userIsAdmin">{{emp.total | currency : $ : 0}}</td>
                             <td>{{emp.cash | currency : $ : 0}}</td>
                             <td>{{emp.cc | currency : $ : 0}}</td>
                             <td>{{emp.employeeCut | currency : $ : 0}}</td>
-                            <td>{{emp.earnings | currency : $ : 0}}</td>
+                            <td ng-if="userIsAdmin">{{emp.earnings | currency : $ : 0}}</td>
                         </tr>
                     </tbody>
                     <thead class="thead-inverse">
                         <tr>
                             <th>Total</th>
                             <th>{{reportTotals.subtotal | currency : $ : 0}}</th>
-                            <th>{{reportTotals.discount | currency : $ : 0}}</th>
-                            <th>{{reportTotals.total | currency : $ : 0}}</th>
+                            <th ng-if="userIsAdmin">{{reportTotals.discount | currency : $ : 0}}</th>
+                            <th ng-if="userIsAdmin">{{reportTotals.total | currency : $ : 0}}</th>
                             <th>{{reportTotals.cash | currency : $ : 0}}</th>
                             <th>{{reportTotals.cc | currency : $ : 0}}</th>
                             <th>{{reportTotals.employeeCut | currency : $ : 0}}</th>
-                            <th>{{reportTotals.earnings | currency : $ : 0}}</th>
+                            <th ng-if="userIsAdmin">{{reportTotals.earnings | currency : $ : 0}}</th>
                         </tr>
                     </thead>
                 </table>
             </div>
-            <div class="charts row mobilecharts" style="margin-bottom: 0;" ng-show="reportEmployees.length">
+            <div class="charts row mobilecharts" style="margin-bottom: 0;" ng-show="reportEmployees.length" ng-if="userIsAdmin">
                 <hr>
                 <div class="col-md-7" style="padding: 0">
                     <canvas id="line" class="chart chart-line" chart-data="saleHoursData" chart-labels="saleHoursLabels" chart-series="saleHoursSeries" chart-dataset-override="saleHoursDatasetOverride" chart-options="saleHoursOptions" chart-click="onClick"></canvas>

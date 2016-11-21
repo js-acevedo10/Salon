@@ -11,8 +11,8 @@
     <strong>Error!</strong> Ha ocurrido un error descargando los empleados, revisa tu conexi&oacute;n a internet.
 </div>
 <div class="row" cg-busy="{promise:getEmployeePromise, message:'Cargando, por favor espere.'}">
-    <div class="col-xs-6 col-xl-4" ng-repeat="employee in employees" style="padding: 15px;">
-        <div class="employeeBox shadowBox row" style="margin:0;">
+    <div class="col-xs-6 col-xl-4" ng-repeat="employee in employees" style="padding: 15px;" ng-if="(userIsAdmin && !employee.active) || employee.active">
+        <div class="employeeBox shadowBox row" style="margin:0;" ng-class="{inactive: !employee.active}">
             <div class="col-md-4 imageBox">
                 <img ng-src="{{employee.picture}}" class="imgEmployee" alt="">
             </div>
@@ -29,7 +29,8 @@
                 <hr>
                 <button class="btn btn-secondary" data-toggle="modal" data-target="#modifyModal" ng-click="showModifyVals(employee)">Modificar</button>
                 <hr class="invisibleInDesktop">
-                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" ng-click="showDeleteVals(employee)">Eliminar</button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" ng-click="showDeleteVals(employee)" ng-if="employee.active">Eliminar</button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" ng-click="showDeleteVals(employee)" ng-if="!employee.active">Restaurar</button>
             </div>
         </div>
     </div>
@@ -119,7 +120,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" ng-click="deleteEmployee()" data-dismiss="modal">Eliminar</button>
+                <button type="button" class="btn btn-primary actionButton" ng-click="deleteEmployee()" data-dismiss="modal">Eliminar</button>
             </div>
         </div>
     </div>

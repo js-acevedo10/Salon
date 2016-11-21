@@ -185,6 +185,10 @@ angular.module('salon.openbill', ['ngRoute'])
     $scope.setCategory = function (id) {
         $scope.selectedCategory = id;
     }
+    
+    $scope.billSubtotal = 0;
+    $scope.billDiscount = 0;
+    $scope.billTotal = 0;
 
     $scope.addItemToBill = function () {
         var productToAdd = {

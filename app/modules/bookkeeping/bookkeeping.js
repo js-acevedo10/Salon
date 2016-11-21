@@ -24,6 +24,10 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                     $scope.currentUser.details = data;
                     if (data !== null) {
                         $scope.currentUser.name = data.username;
+                        $scope.currentUser.role = data.role;
+                        if (data.role == 'Admin' || data.role == 'Owner') {
+                            $scope.userIsAdmin = true;
+                        }
                     }
                 });
         };
@@ -47,6 +51,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                     getTodaysSales();
                     getTodayExpenses();
                     getTodayCashBase();
+                    getEmployeesReport(null, null);
                 }
             }, function errorCallback(response) {
                 $scope.getEmployeesError = true;
@@ -108,8 +113,9 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 $scope.getSalesError = true;
             });
         }
-        
+
         function getTodayExpenses() {
+            $scope.todayExpenses = 0;
             var initDate = new Date();
             initDate.setHours(0, 0, 0, 0, 0);
             var finalDate = new Date();
@@ -126,12 +132,15 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 }
             }).then(function successCallback(response) {
                 $scope.expenses = response.data;
+                angular.forEach($scope.expenses, function (expense) {
+                    $scope.todayExpenses += expense.cost;
+                })
                 $scope.getExpensesError = false;
             }, function errorCallback(response) {
                 $scope.getExpensesError = true;
             });
         }
-        
+
         function getTodayCashBase() {
             var initDate = new Date();
             initDate.setHours(0, 0, 0, 0, 0);
@@ -173,7 +182,9 @@ angular.module('salon.bookkeeping', ['ngRoute'])
                 $scope.saleHoursLabels = [];
                 $scope.saleHoursSeries = ["Ventas"];
                 $scope.saleHoursData = [];
-                $scope.saleHoursDatasetOverride = [{ yAxisID: 'y-axis-1' }];
+                $scope.saleHoursDatasetOverride = [{
+                    yAxisID: 'y-axis-1'
+                }];
                 $scope.saleHoursOptions = {
                     scales: {
                         yAxes: [
@@ -276,7 +287,7 @@ angular.module('salon.bookkeeping', ['ngRoute'])
             for (var i = minHour; i < maxHour + 1; i++) {
                 if (i < 12) {
                     $scope.saleHoursLabels.push(i + 'am');
-                } else if(i == 12) {
+                } else if (i == 12) {
                     $scope.saleHoursLabels.push(12 + 'm');
                 } else {
                     $scope.saleHoursLabels.push((i - 12) + 'pm');
@@ -288,26 +299,60 @@ angular.module('salon.bookkeeping', ['ngRoute'])
 
         function calcSalesReportGraphs(minHour) {
             angular.forEach($scope.givenDateSales, function (sale, k) {
-                var index = $scope.salesPieLabels.indexOf(sale.productName);
-                if (index != -1) {
-                    $scope.salesPieData[index] = $scope.salesPieData[index] + 1;
-                } else {
-                    $scope.salesPieLabels.push(sale.productName);
-                    $scope.salesPieData.push(1);
+                if (sale.productPrice > 0) {
+                    var index = $scope.salesPieLabels.indexOf(sale.productName);
+                    if (index != -1) {
+                        $scope.salesPieData[index] = $scope.salesPieData[index] + 1;
+                    } else {
+                        $scope.salesPieLabels.push(sale.productName);
+                        $scope.salesPieData.push(1);
+                    }
+                    var d = new Date(sale.date);
+                    var dm = d.getHours();
+                    if (d.getHours() < 12) {
+                        var dm = d.getHours() + 'am';
+                    } else if (d.getHours == 12) {
+                        var dm = d.getHours() + 'm';
+                    } else {
+                        var dm = (d.getHours() - 12) + 'pm';
+                    }
+                    var index2 = $scope.saleHoursLabels.indexOf(dm);
+                    if (index2 != -1) {
+                        $scope.saleHoursData[index2] = $scope.saleHoursData[index2] + 1;
+                    }
                 }
-                var d = new Date(sale.date);
-                var dm = d.getHours();
-                if (d.getHours() < 12) {
-                    var dm = d.getHours() + 'am';
-                } else if(d.getHours == 12) {
-                    var dm = d.getHours() + 'm';
-                } else {
-                    var dm = (d.getHours() - 12) + 'pm';
+            })
+        }
+
+        $scope.returnProduct = function (sale) {
+            var ret = {};
+            ret.productPrice = sale.productPrice * -1;
+            ret.productFixedCost = sale.productFixedCost * -1;
+            ret.productEmployeeCut = sale.productEmployeeCut * -1;
+            ret.productDiscount = sale.productDiscount * -1;
+            ret.productEarnings = sale.productEarnings * -1;
+
+            $scope.loadingBillsPromise = $http({
+                method: 'POST',
+                url: Backand.getApiUrl() + '/1/objects/Sales?returnObject=true',
+                data: {
+                    date: new Date(),
+                    productId: sale.productId,
+                    productName: sale.productName,
+                    productPrice: ret.productPrice,
+                    productDiscount: ret.productDiscount,
+                    productFixedCost: ret.productFixedCost,
+                    productSalesmanPercentage: '0',
+                    productEmployeeCut: ret.productEmployeeCut,
+                    productEarnings: ret.productEarnings,
+                    employeeId: sale.employeeId,
+                    employeeName: sale.employeeName,
+                    bill: sale.billId
                 }
-                var index2 = $scope.saleHoursLabels.indexOf(dm);
-                if (index2 != -1) {
-                    $scope.saleHoursData[index2] = $scope.saleHoursData[index2] + 1;
-                }
+            }).then(function successCallback(response) {
+                getTodaysSales();
+            }, function errorCallback(response) {
+                console.log(response);
             })
         }
 

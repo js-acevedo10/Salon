@@ -45,3 +45,7 @@
 .settingsButtons {
     width: 50%;
 }
+
+.inactive {
+    opacity: 0.3;
+}
